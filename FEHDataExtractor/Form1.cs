@@ -68,7 +68,7 @@ namespace FEHDataExtractor
                     if (tmp != null && !tmp.Name.Equals(""))
                     {
                         HSDARC a = new HSDARC(0, data);
-                        while (a.Ptr_list_length > a.Index)
+                        while (a.Ptr_list_length - a.NegateIndex > a.Index)
                         {
                             tmp.InsertIn(a, offset, data);
                             output += tmp.ToString();

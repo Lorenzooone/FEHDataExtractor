@@ -106,6 +106,23 @@ public class ByteXor : Xor
     public byte Value { get => value; set => this.value = value; }
 }
 
+public class SByteXor : Xor
+{
+    private SByte value;
+
+    public SByteXor(params byte[] A) : base(A) { }
+
+    public void XorValue(byte value)
+    { Value = (SByte)getDataXorred(value, 0); }
+
+    override public String ToString()
+    {
+        return Value.ToString();
+    }
+
+    public SByte Value { get => value; set => this.value = value; }
+}
+
 public class UInt16Xor : Xor
 {
     private UInt16 value;
@@ -155,6 +172,25 @@ public class ExtractUtils
     public static long getLong(long a, byte[] data)
     {
         return (long)data[a] + (data[a + 1] << 8) + (data[a + 2] << 16) + (data[a + 3] << 24) + ((long)data[a + 4] << 32) + ((long)data[a + 5] << 40) + ((long)data[a + 6] << 48) + ((long)data[a + 7] << 56);
+    }
+
+    public static String BitmaskConvertToString(UInt32 value, String[] Names) {
+        String text = "";
+        int tmp = 1;
+        bool start = true;
+        for (int i = 0; i < Names.Length; i++)
+        {
+            if (((value & tmp) >> i) == 1)
+            {
+                if (!start)
+                    text += ", " + Names[i];
+                else
+                    text += " " + Names[i];
+                start = false;
+            }
+            tmp = tmp << 1;
+        }
+        return text;
     }
 }
 
