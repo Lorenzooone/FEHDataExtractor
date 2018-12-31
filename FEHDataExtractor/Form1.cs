@@ -62,10 +62,11 @@ namespace FEHDataExtractor
                         tmp = A[i];
                 foreach (String file in openFileDialog1.FileNames)
                 {
-                    byte[] data = File.ReadAllBytes(file);
+                    string ext = System.IO.Path.GetExtension(file).ToLower();
+                    byte[] data = Decompression.Open(file);
                     String output = "";
 
-                    if (tmp != null && !tmp.Name.Equals(""))
+                    if (data != null && tmp != null && !(tmp.Name.Equals("") || tmp.Name.Equals("Decompress")))
                     {
                         HSDARC a = new HSDARC(0, data);
                         while (a.Ptr_list_length - a.NegateIndex > a.Index)
@@ -76,10 +77,15 @@ namespace FEHDataExtractor
                     }
 
                     String PathManip = file.Remove(file.Length - 3, 3);
-                    PathManip += "txt";
+                    if (ext.Equals(".lz"))
+                        PathManip = file.Remove(file.Length - 6, 6);
+                    PathManip += tmp.Name.Equals("Decompress") ? "bin" : "txt";
                     if (file.Equals(PathManip))
-                        PathManip += ".txt";
-                    File.WriteAllText(PathManip, output);
+                        PathManip += tmp.Name.Equals("Decompress") ? ".bin" : ".txt";
+                    if(tmp.Name.Equals("Decompress") && data!= null)
+                        File.WriteAllBytes(PathManip, data);
+                    else
+                        File.WriteAllText(PathManip, output);
                     MessageBox.Show("File Processed!", "Success");
                 }
             }

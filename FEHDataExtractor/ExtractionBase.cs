@@ -51,7 +51,11 @@ public abstract class ExtractionBase
     public static readonly String[] Movement = { "Infantry", "Armored", "Cavalry", "Flying" };
     public static readonly String[] Series = { "Heroes", "Shadow Dragon and the Blade of Light / Mystery of the Emblem / Shadow Dragon / New Mystery of the Emblem", "Gaiden / Echoes", "Genealogy of the Holy War", "Thracia 776", "The Binding Blade", "The Blazing Blade", "The Sacred Stones", "Path of Radiance", "Radiant Dawn", "Awakening", "Fates" };
     public static readonly String[] BadgeColor = { "Scarlet", "Azure", "Verdant", "Trasparent" };
+    public static readonly String[] ShardColor = { "Universal", "Scarlet", "Azure", "Verdant", "Trasparent" };
     public static readonly String[] SkillCategory = { "Weapon", "Assist", "Special", "Passive A", "Passive B", "Passive C", "Sacred Seal", "Refined Weapon Skill Effect" };
+    public static readonly String[] Ranks = { "C", "B", "A", "S" };
+    public static readonly String[] LegendaryElement = { "Fire", "Water", "Wind", "Earth", "Light", "Dark", "Astra", "Anima" };
+
 
     private HSDARC archive;
 
@@ -64,10 +68,12 @@ public abstract class ExtractionBase
     public string Name { get; set; }
     public HSDARC Archive { get => archive; set => archive = value; }
 }
+
 public abstract class GCRelated : ExtractionBase
 {
     public byte[] GC = { 0x17, 0xFC, 0xC9, 0xEA, 0x79, 0x69, 0x24, 0xBD, 0xA4, 0x54, 0x0E, 0x58, 0xBD, 0x8B, 0x36, 0xCD, 0xAF, 0xB4, 0xE2, 0x09, 0x3C, 0x1F, 0x8C, 0x9C, 0xD1, 0x48, 0x51, 0xA1, 0xFB, 0xAD, 0x48, 0x7E, 0xC3, 0x38, 0x5A, 0x41 };
 }
+
 public abstract class CommonRelated : ExtractionBase
 {
     public byte[] Common = { 0x81, 0x00, 0x80, 0xA4, 0x5A, 0x16, 0x6F, 0x78, 0x57, 0x81, 0x2D, 0xF7, 0xFC, 0x66, 0x0F, 0x27, 0x75, 0x35, 0xB4, 0x34, 0x10, 0xEE, 0xA2, 0xDB, 0xCC, 0xE3, 0x35, 0x99, 0x43, 0x48, 0xD2, 0xBB, 0x93, 0xC1 };
@@ -178,7 +184,6 @@ public class Legendary : ExtractionBase
 {
     private Stats bonuses;
     private ByteXor element;
-    private static readonly String[] LegendaryElement = {"Fire", "Water", "Wind", "Earth", "Light", "Dark", "Astra", "Anima"};
 
     public Legendary()
     {
@@ -215,8 +220,8 @@ public class Legendary : ExtractionBase
 public class Enemy : CharacterRelated
 {
     StringXor topWeapon;
-    ByteXor _spawnable_Enemy;              // XOR cipher: C5
-    ByteXor is_boss;                // XOR cipher: 6A
+    ByteXor _spawnable_Enemy;
+    ByteXor is_boss;
 
     public ByteXor Is_boss { get => is_boss; set => is_boss = value; }
     public ByteXor Spawnable_Enemy { get => _spawnable_Enemy; set => _spawnable_Enemy = value; }
@@ -300,7 +305,27 @@ public class Enemy : CharacterRelated
 
 }
 
-public class Hero : CharacterRelated
+public class Decompress : CharacterRelated
+{
+
+    public Decompress() : base()
+    {
+        Name = "Decompress";
+    }
+
+    public Decompress(long a, byte[] data) : this()
+    {
+        InsertIn(a, data);
+    }
+
+    public override void InsertIn(long a, byte[] data)
+    {
+
+    }
+
+}
+
+public class Person : CharacterRelated
 {
     public static readonly String[] PrintSkills = {"Default Weapon: ", "Default Assist: ", "Default Special: ", "Unknown: ", "Unknown: ", "Unknown: ", "Unlocked Weapon: ", "Unlocked Assist: ", "Unlocked Special: ", "Passive A: ", "Passive B: ", "Passive C: ", "Unknown: ", "Unknown: "};
 
@@ -316,7 +341,7 @@ public class Hero : CharacterRelated
     Stats max_stats;
     StringXor[,] skills;
 
-    public Hero():base()
+    public Person():base()
     {
         Name = "Heroes";
         Id_num = new UInt32Xor(0x18, 0x4E, 0x6E, 0x5F);
@@ -333,7 +358,7 @@ public class Hero : CharacterRelated
         Skills = new StringXor[5, PrintSkills.Length];
     }
 
-    public Hero(long a, byte[] data) : this() {
+    public Person(long a, byte[] data) : this() {
         InsertIn(a, data);
     }
 
@@ -1045,7 +1070,6 @@ public class Skills : CommonRelated
     public UInt16Xor Ss_badge { get => ss_badge; set => ss_badge = value; }
     public UInt16Xor Ss_great_badge { get => ss_great_badge; set => ss_great_badge = value; }
 }
-
 
 public class GenericText : CommonRelated
 {

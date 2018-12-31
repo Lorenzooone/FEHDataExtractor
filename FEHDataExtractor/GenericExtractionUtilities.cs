@@ -192,6 +192,16 @@ public class ExtractUtils
         }
         return text;
     }
+
+    public static String GetStringSize(long a, byte[] data, long size)
+    {
+        String Value = "";
+        Byte[] tmp = new Byte[size];
+        for (int i = 0; i < size; i++)
+            tmp[i] = (data[a + i]);
+        Value = Encoding.UTF8.GetString(tmp);
+        return Value;
+    }
 }
 
 public class StringXor : Xor

@@ -116,7 +116,9 @@
             this.openFileDialog1.FileOk += new System.ComponentModel.CancelEventHandler(this.openFileDialog1_FileOk);
             // Set the file dialog to filter for graphics files.
             this.openFileDialog1.Filter =
+                "All supported files |*.bin;*.lz|" +
                 "Binary File (*.bin)|*.bin|" +
+                "LZ Archive (*.lz)|*.lz|" +
                 "All files (*.*)|*.*";
 
             // Allow the user to select multiple images.
