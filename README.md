@@ -14,6 +14,8 @@ Skills (/Common/SRPG/Skill)
 
 Quests (/Common/Mission)
 
+Tempest Trial (/Common/SRPG/SequentialMap) BETA!
+
 In the future it will support more things. Supports auto decompression.
 
 Thanks to https://github.com/SciresM/FEAT and https://github.com/einstein95/dsdecmp for the base of the decompression code.

@@ -316,7 +316,6 @@ namespace FEHDataExtractor
             return Rewards.ToString();
         }
     }
-    //TT Reward Payload Size Xor: 0xEC 0x9D 0x02 0x5A
     public class Reward_Definition : ExtractionBase
     {
         private byte reward_Count;

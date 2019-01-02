@@ -249,6 +249,8 @@ namespace FEHDataExtractor
 
         public Quest_group()
         {
+            Name = "Quests";
+            ElemXor = new byte[] { 0x5B, 0x54, 0x4C, 0x70, 0x0B, 0x1E, 0x4E, 0x03 };
             Size = 80;
             Start = new Int64Xor(0x60, 0xF6, 0x37, 0xC5, 0x36, 0xA2, 0x0D, 0xDC);
             Finish = new Int64Xor(0xE9, 0x56, 0xBD, 0xFA, 0x2A, 0x69, 0xAD, 0xC8);
@@ -304,45 +306,6 @@ namespace FEHDataExtractor
                 text += "Quest List " + (i + 1) + ":" + Environment.NewLine + Lists[i];
             }
             text += "-----------------------------------------------------------------------------------------------" + Environment.NewLine;
-            return text;
-        }
-    }
-    public class BaseQuest : ExtractionBase
-    {
-        private Int64Xor numElem;
-        private Quest_group[] quests;
-
-        public Int64Xor NumElem { get => numElem; set => numElem = value; }
-        public Quest_group[] Quests { get => quests; set => quests = value; }
-
-        public BaseQuest()
-        {
-            Name = "Quests";
-            NumElem = new Int64Xor(0x5B, 0x54, 0x4C, 0x70, 0x0B, 0x1E, 0x4E, 0x03);
-        }
-        public BaseQuest(long a, byte[] data) : this()
-        {
-            InsertIn(a, data);
-        }
-        public override void InsertIn(long a, byte[] data)
-        {
-            a = Archive.Ptr_list[Archive.Index];
-            NumElem.XorValue(ExtractUtils.getLong(a + 8, data));
-            Archive.Index++;
-            Quests = new Quest_group[NumElem.Value];
-            a = ExtractUtils.getLong(a, data) + offset;
-            for (int i = 0; i < NumElem.Value; i++)
-            {
-                Quests[i] = new Quest_group();
-                Quests[i].InsertIn(Archive, a + (Quests[i].Size * i), data);
-            }
-        }
-
-        public override string ToString()
-        {
-            String text = "";
-            for (int i = 0; i < NumElem.Value; i++)
-                text += Quests[i];
             return text;
         }
     }

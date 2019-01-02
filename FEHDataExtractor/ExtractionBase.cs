@@ -45,7 +45,7 @@ public class HSDARC
 
 public abstract class ExtractionBase
 {
-    public static int offset = 0x20;
+    public static readonly int offset = 0x20;
     public static readonly String[] Weapons = { "Red Sword", "Blue Lance", "Green Axe", "Red Bow", "Blue Bow", "Green Bow", "Colorless Bow", "Red Dagger", "Blue Dagger", "Green Dagger", "Colorless Dagger", "Red Tome", "Blue Tome", "Green Tome", "Colorless Staff", "Red Breath", "Blue Breath", "Green Breath", "Colorless Breath" };
     public static readonly String[] Tome_Elem = { "None", "Fire", "Thunder", "Wind", "Light", "Dark" };
     public static readonly String[] Movement = { "Infantry", "Armored", "Cavalry", "Flying" };
@@ -56,6 +56,7 @@ public abstract class ExtractionBase
     public static readonly String[] Ranks = { "C", "B", "A", "S" };
     public static readonly String[] LegendaryElement = { "Fire", "Water", "Wind", "Earth", "Light", "Dark", "Astra", "Anima" };
     public static readonly String[] Colours = { "Red", "Blue", "Green", "Colorless" };
+    private byte[] elemXor;
     private int size = 0;
 
 
@@ -70,6 +71,7 @@ public abstract class ExtractionBase
     public string Name { get; set; }
     public HSDARC Archive { get => archive; set => archive = value; }
     public int Size { get => size; set => size = value; }
+    public byte[] ElemXor { get => elemXor; set => elemXor = value; }
 }
 
 public abstract class GCRelated : ExtractionBase
@@ -235,6 +237,8 @@ public class SingleEnemy : CharacterRelated
 
     public SingleEnemy() : base()
     {
+        Name = "Enemies";
+        ElemXor = new byte[] { 0x5C, 0x34, 0xC5, 0x9C, 0x11, 0x95, 0xCA, 0x62 };
         Size += 17; //10 of the stuff + 7 of padding
         Id_num = new UInt32Xor(0xD4, 0x41, 0x2F, 0x42);
         Weapon_type = new ByteXor(0xE4);
@@ -349,7 +353,9 @@ public class SinglePerson : CharacterRelated
 
     public SinglePerson():base()
     {
-        Size = Size + 41 + (5 * 8 * PrintSkills.Length);
+        Name = "Heroes";
+        ElemXor = new byte[] { 0xE1, 0xB9, 0x3A, 0x3C, 0x79, 0xAB, 0x51, 0xDE };
+        Size += 41 + (5 * 8 * PrintSkills.Length);
         Id_num = new UInt32Xor(0x18, 0x4E, 0x6E, 0x5F);
         Sort_value = new UInt32Xor(0x9B, 0x34, 0x80, 0x2A);
         Weapon_type = new ByteXor(6);
@@ -688,6 +694,7 @@ public class SingleSkill : CommonRelated
     public SingleSkill()
     {
         Name = "Skills";
+        ElemXor = new byte[] { 0xAD, 0xE9, 0xDE, 0x4A, 0x07, 0xC7, 0xEC, 0x7F };
         Size = 320;
         Prerequisites = new StringXor[2];
         Sprites = new StringXor[4];
@@ -1077,126 +1084,6 @@ public class SingleSkill : CommonRelated
     public UInt16Xor Ss_great_badge { get => ss_great_badge; set => ss_great_badge = value; }
 }
 
-public class Skills : ExtractionBase
-{
-    private Int64Xor numElem;
-    private SingleSkill[] skill;
-
-    public Int64Xor NumElem { get => numElem; set => numElem = value; }
-    public SingleSkill[] Skill { get => skill; set => skill = value; }
-
-    public Skills()
-    {
-        Name = "Skills";
-        NumElem = new Int64Xor(0xAD, 0xE9, 0xDE, 0x4A, 0x07, 0xC7, 0xEC, 0x7F);
-    }
-    public Skills(long a, byte[] data) : this()
-    {
-        InsertIn(a, data);
-    }
-    public override void InsertIn(long a, byte[] data)
-    {
-        a = Archive.Ptr_list[Archive.Index];
-        NumElem.XorValue(ExtractUtils.getLong(a + 8, data));
-        Archive.Index++;
-        Skill = new SingleSkill[NumElem.Value];
-        a = ExtractUtils.getLong(a, data) + offset;
-        for (int i = 0; i < NumElem.Value; i++)
-        {
-            Skill[i] = new SingleSkill();
-            Skill[i].InsertIn(Archive, a + (Skill[i].Size * i), data);
-        }
-    }
-
-    public override string ToString()
-    {
-        String text = "";
-        for (int i = 0; i < NumElem.Value; i++)
-            text += Skill[i];
-        return text;
-    }
-}
-
-public class Enemies : ExtractionBase
-{
-    private Int64Xor numElem;
-    private SingleEnemy[] enemy;
-
-    public Int64Xor NumElem { get => numElem; set => numElem = value; }
-    public SingleEnemy[] Enemy { get => enemy; set => enemy = value; }
-
-    public Enemies()
-    {
-        Name = "Enemies";
-        NumElem = new Int64Xor(0x5C, 0x34, 0xC5, 0x9C, 0x11, 0x95, 0xCA, 0x62);
-    }
-    public Enemies(long a, byte[] data) : this()
-    {
-        InsertIn(a, data);
-    }
-    public override void InsertIn(long a, byte[] data)
-    {
-        a = Archive.Ptr_list[Archive.Index];
-        NumElem.XorValue(ExtractUtils.getLong(a + 8, data));
-        Archive.Index++;
-        Enemy = new SingleEnemy[NumElem.Value];
-        a = ExtractUtils.getLong(a, data) + offset;
-        for (int i = 0; i < NumElem.Value; i++)
-        {
-            Enemy[i] = new SingleEnemy();
-            Enemy[i].InsertIn(Archive, a + (Enemy[i].Size * i), data);
-        }
-    }
-
-    public override string ToString()
-    {
-        String text = "";
-        for (int i = 0; i < NumElem.Value; i++)
-            text += Enemy[i];
-        return text;
-    }
-}
-
-public class Heroes : ExtractionBase
-{
-    private Int64Xor numElem;
-    private SinglePerson[] hero;
-
-    public Int64Xor NumElem { get => numElem; set => numElem = value; }
-    public SinglePerson[] Hero { get => hero; set => hero = value; }
-
-    public Heroes()
-    {
-        Name = "Heroes";
-        NumElem = new Int64Xor(0xE1, 0xB9, 0x3A, 0x3C, 0x79, 0xAB, 0x51, 0xDE);
-    }
-    public Heroes(long a, byte[] data) : this()
-    {
-        InsertIn(a, data);
-    }
-    public override void InsertIn(long a, byte[] data)
-    {
-        a = Archive.Ptr_list[Archive.Index];
-        NumElem.XorValue(ExtractUtils.getLong(a + 8, data));
-        Archive.Index++;
-        Hero = new SinglePerson[NumElem.Value];
-        a = ExtractUtils.getLong(a, data) + offset;
-        for (int i = 0; i < NumElem.Value; i++)
-        {
-            Hero[i] = new SinglePerson();
-            Hero[i].InsertIn(Archive, a + (Hero[i].Size * i), data);
-        }
-    }
-
-    public override string ToString()
-    {
-        String text = "";
-        for (int i = 0; i < NumElem.Value; i++)
-            text += Hero[i];
-        return text;
-    }
-}
-
 public class GenericText : CommonRelated
 {
     private StringXor[] elements;
@@ -1232,4 +1119,45 @@ public class GenericText : CommonRelated
         return text;
     }
 
+}
+
+public class BaseExtractArchive<T> : ExtractionBase where T : ExtractionBase, new()
+{
+    private Int64Xor numElem;
+    private T[] things;
+
+    public Int64Xor NumElem { get => numElem; set => numElem = value; }
+    internal T[] Things { get => things; set => things = value; }
+
+    public BaseExtractArchive()
+    {
+        T tmp = new T();
+        Name = tmp.Name;
+        NumElem = new Int64Xor(tmp.ElemXor);
+    }
+    public BaseExtractArchive(long a, byte[] data) : this()
+    {
+        InsertIn(a, data);
+    }
+    public override void InsertIn(long a, byte[] data)
+    {
+        a = Archive.Ptr_list[Archive.Index];
+        NumElem.XorValue(ExtractUtils.getLong(a + 8, data));
+        Archive.Index++;
+        Things = new T[NumElem.Value];
+        a = ExtractUtils.getLong(a, data) + offset;
+        for (int i = 0; i < NumElem.Value; i++)
+        {
+            Things[i] = new T();
+            Things[i].InsertIn(Archive, a + (Things[i].Size * i), data);
+        }
+    }
+
+    public override string ToString()
+    {
+        String text = "";
+        for (int i = 0; i < NumElem.Value; i++)
+            text += Things[i];
+        return text;
+    }
 }

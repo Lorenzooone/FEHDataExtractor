@@ -29,7 +29,7 @@ public class UInt64Xor : Xor
     public UInt64Xor(params byte[] A) : base(A) { }
 
     public void XorValue(Int64 value)
-    { Value = (UInt64)(getDataXorred((byte)(value & 255), 0) + (getDataXorred((byte)((value >> 8) & 255), 1) << 8) + (getDataXorred((byte)((value >> 16) & 255), 2) << 16) + (getDataXorred((byte)((value >> 24) & 255), 3) << 24) + ((long)getDataXorred((byte)((value >> 32) & 255), 4) << 32) + ((long)getDataXorred((byte)((value >> 40) & 255), 5) << 40) + ((long)getDataXorred((byte)((value >> 48) & 255), 6) << 48) + ((long)getDataXorred((byte)((value >> 56) & 255), 7) << 56)); }
+    { Value = (UInt64)(getDataXorred((byte)(value & 255), 0) + ((ulong)getDataXorred((byte)((value >> 8) & 255), 1) << 8) + ((ulong)getDataXorred((byte)((value >> 16) & 255), 2) << 16) + ((ulong)getDataXorred((byte)((value >> 24) & 255), 3) << 24) + ((ulong)getDataXorred((byte)((value >> 32) & 255), 4) << 32) + ((ulong)getDataXorred((byte)((value >> 40) & 255), 5) << 40) + ((ulong)getDataXorred((byte)((value >> 48) & 255), 6) << 48) + ((ulong)getDataXorred((byte)((value >> 56) & 255), 7) << 56)); }
 
     override public String ToString()
     {
@@ -45,7 +45,7 @@ public class Int64Xor : Xor
 
     public Int64Xor(params byte[] A) : base(A) { }
     public void XorValue(Int64 value)
-    { Value = (Int64)(getDataXorred((byte)(value & 255), 0) + (getDataXorred((byte)((value >> 8) & 255), 1) << 8) + (getDataXorred((byte)((value >> 16) & 255), 2) << 16) + (getDataXorred((byte)((value >> 24) & 255), 3) << 24) + (getDataXorred((byte)((value >> 32) & 255), 4) << 32) + (getDataXorred((byte)((value >> 40) & 255), 5) << 40) + (getDataXorred((byte)((value >> 48) & 255), 6) << 48) + (getDataXorred((byte)((value >> 56) & 255), 7) << 56)); }
+    { Value = (Int64)(getDataXorred((byte)(value & 255), 0) + ((long)getDataXorred((byte)((value >> 8) & 255), 1) << 8) + ((long)getDataXorred((byte)((value >> 16) & 255), 2) << 16) + ((long)getDataXorred((byte)((value >> 24) & 255), 3) << 24) + ((long)getDataXorred((byte)((value >> 32) & 255), 4) << 32) + ((long)getDataXorred((byte)((value >> 40) & 255), 5) << 40) + ((long)getDataXorred((byte)((value >> 48) & 255), 6) << 48) + ((long)getDataXorred((byte)((value >> 56) & 255), 7) << 56)); }
 
     override public String ToString()
     {
@@ -62,7 +62,7 @@ public class UInt32Xor : Xor
     public UInt32Xor(params byte[] A) : base(A) { }
 
     public void XorValue(Int32 value)
-    { Value = (UInt32)(getDataXorred((byte)(value & 255), 0) + (getDataXorred((byte)((value >> 8) & 255), 1) << 8) + (getDataXorred((byte)((value >> 16) & 255), 2) << 16) + (getDataXorred((byte)((value >> 24) & 255), 3) << 24)); }
+    { Value = (UInt32)(getDataXorred((byte)(value & 255), 0) + (getDataXorred((byte)((value >> 8) & 255), 1) << 8) + (getDataXorred((byte)((value >> 16) & 255), 2) << 16) + ((UInt32)getDataXorred((byte)((value >> 24) & 255), 3) << 24)); }
 
     override public String ToString()
     {
