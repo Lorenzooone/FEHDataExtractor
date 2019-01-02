@@ -71,7 +71,6 @@ namespace FEHDataExtractor
     public abstract class Reward_Type : ExtractionBase
     {
         byte kind;
-        int size;
 
         public static readonly String[] Thing = { "Orb", "Hero", "Hero Feather", "Stamina Potion", "Dueling Crest", "Light's Blessing", "Crystal", "", "", "", "", "", "Badge", "Battle Flag", "Sacred Seal", "Arena Assault Item", "Sacred Coin", "Refining Stone", "Divine Dew", "Arena Medal", "Blessing", "Conquest Lance", "Accessory", "Conversation", "", "Arena Crown", "", "Aether Stone" };
 
@@ -82,7 +81,6 @@ namespace FEHDataExtractor
         }
 
         public byte Kind { get => kind; set => kind = value; }
-        public int Size { get => size; set => size = value; }
     }
 
     public class StringDependant : Reward_Type
@@ -286,19 +284,16 @@ namespace FEHDataExtractor
     }
     public class Reward_Payload : ExtractionBase
     {
-        private int size;
         public static readonly long Magic = 0x160707001B9AD871;
         private byte[] iV;
         private Reward_Definition rewards;
         public static readonly byte[] AES128Key = { 0x4b, 0x0d, 0xb4, 0x88, 0x61, 0x7c, 0x60, 0xa1, 0x2b, 0x09, 0x40, 0xe9, 0xed, 0x92, 0xa6, 0x8f };
-
-        public int Size { get => size; set => size = value; }
+        
         public byte[] IV { get => iV; set => iV = value; }
         public Reward_Definition Rewards { get => rewards; set => rewards = value; }
 
         public Reward_Payload(int size)
         {
-            Name = "Reward";
             Size = size;
         }
 

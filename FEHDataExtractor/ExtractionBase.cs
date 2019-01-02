@@ -55,6 +55,8 @@ public abstract class ExtractionBase
     public static readonly String[] SkillCategory = { "Weapon", "Assist", "Special", "Passive A", "Passive B", "Passive C", "Sacred Seal", "Refined Weapon Skill Effect" };
     public static readonly String[] Ranks = { "C", "B", "A", "S" };
     public static readonly String[] LegendaryElement = { "Fire", "Water", "Wind", "Earth", "Light", "Dark", "Astra", "Anima" };
+    public static readonly String[] Colours = { "Red", "Blue", "Green", "Colorless" };
+    private int size = 0;
 
 
     private HSDARC archive;
@@ -67,6 +69,7 @@ public abstract class ExtractionBase
 
     public string Name { get; set; }
     public HSDARC Archive { get => archive; set => archive = value; }
+    public int Size { get => size; set => size = value; }
 }
 
 public abstract class GCRelated : ExtractionBase
