@@ -17,7 +17,7 @@ namespace FEHDataExtractor
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1(new GCWorld(), new Person(), new Enemy(), new GenericText(), new Skills(), new BaseQuest(), new Decompress()));
+            Application.Run(new Form1(new GCWorld(), new Heroes(), new Enemies(), new GenericText(), new Skills(), new BaseQuest(), new Decompress()));
         }
     }
 }
