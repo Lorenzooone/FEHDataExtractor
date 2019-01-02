@@ -999,10 +999,10 @@ public class Skills : CommonRelated
             text += "Next Seal: " + Next_seal + Environment.NewLine;
         if (!Prev_seal.Value.Equals(""))
             text += "Previous Seal: " + Prev_seal + Environment.NewLine;
-        text += "Sacred Seal required Coins: " + Ss_coin + Environment.NewLine;
-        text += "Sacred Seal required Badge type: " + BadgeColor[Ss_badge_type.Value] + Environment.NewLine;
-        text += "Sacred Seal required Badges: " + Ss_badge + Environment.NewLine;
-        text += "Sacred Seal required Great Badges: " + Ss_great_badge + Environment.NewLine;
+        text += Ss_coin.Value == 0 ? "" : "Sacred Seal required Coins: " + Ss_coin + Environment.NewLine;
+        text += Ss_coin.Value == 0 ? "" : "Sacred Seal required Badge type: " + BadgeColor[Ss_badge_type.Value] + Environment.NewLine;
+        text += Ss_coin.Value == 0 ? "" : "Sacred Seal required Badges: " + Ss_badge + Environment.NewLine;
+        text += Ss_coin.Value == 0 ? "" : "Sacred Seal required Great Badges: " + Ss_great_badge + Environment.NewLine;
         
         text += "-----------------------------------------------------------------------------------------------" + Environment.NewLine;
 

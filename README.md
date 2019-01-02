@@ -12,4 +12,8 @@ Grand Conquest Map Settings (/Common/Occupation/World)
 
 Skills (/Common/SRPG/Skill)
 
-In the future it will support more things and decompression too. For now to decompress the files, use FEAT.
+Quests (/Common/Mission)
+
+In the future it will support more things. Supports auto decompression.
+
+Thanks to https://github.com/SciresM/FEAT and https://github.com/einstein95/dsdecmp for the base of the decompression code.
