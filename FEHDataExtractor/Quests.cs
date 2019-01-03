@@ -49,7 +49,7 @@ namespace FEHDataExtractor
             if (!Hero_id.Value.Equals(""))
                 text += getHeroName(Hero_id.Value) + ", ";
             text += Color.Value != -1 ? "Color: " + Colours[Color.Value] + ", " : "";
-            text += Wep_type.Value != -1 ? "Weapon: " + Weapons[Wep_type.Value] + ", " : "";
+            text += Wep_type.Value != -1 ? "Weapon: " + WeaponNames[Wep_type.Value] + ", " : "";
             text += Mov_type.Value != -1 ? "Movement: " + Movement[Mov_type.Value] + ", " : "";
             text += Lv.Value != -1 ? "At least level: " + Lv + ", " : "";
             text += Blessing.Value != 0 ? "Legendary/Blessed: " + LegendaryElement[Blessing.Value - 1] + ", " : "";

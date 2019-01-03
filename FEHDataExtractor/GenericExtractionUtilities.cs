@@ -183,6 +183,9 @@ public class LoadMessages
                 {
                     tmp.InsertIn(a, offset, data);
                 }
+                string path2 = path.Remove(path.Length - 6, 6) + "txt";
+                string output = tmp.ToString();
+                File.WriteAllText(path2, output);
             }
         }
     }

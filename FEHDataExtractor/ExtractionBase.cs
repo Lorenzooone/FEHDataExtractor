@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FEHDataExtractor;
+using System;
 using System.Collections;
 
 public class HSDARC
@@ -48,7 +49,8 @@ public abstract class ExtractionBase
 {
     public static readonly int offset = 0x20;
     private static Hashtable table = new Hashtable();
-    public static readonly String[] Weapons = { "Red Sword", "Blue Lance", "Green Axe", "Red Bow", "Blue Bow", "Green Bow", "Colorless Bow", "Red Dagger", "Blue Dagger", "Green Dagger", "Colorless Dagger", "Red Tome", "Blue Tome", "Green Tome", "Colorless Staff", "Red Breath", "Blue Breath", "Green Breath", "Colorless Breath" };
+    public static String[] WeaponNames = { "Sword", "Lance", "Axe", "Red Bow", "Blue Bow", "Green Bow", "Bow", "Red Dagger", "Blue Dagger", "Green Dagger", "Dagger", "Red Tome", "Blue Tome", "Green Tome", "Staff", "Red Breath", "Blue Breath", "Green Breath", "Colorless Breath" };
+    public static SingleWeaponClass[] WeaponsData;
     public static readonly String[] Tome_Elem = { "None", "Fire", "Thunder", "Wind", "Light", "Dark" };
     public static readonly String[] Movement = { "Infantry", "Armored", "Cavalry", "Flying" };
     public static readonly String[] Series = { "Heroes", "Shadow Dragon and the Blade of Light / Mystery of the Emblem / Shadow Dragon / New Mystery of the Emblem", "Gaiden / Echoes", "Genealogy of the Holy War", "Thracia 776", "The Binding Blade", "The Blazing Blade", "The Sacred Stones", "Path of Radiance", "Radiant Dawn", "Awakening", "Fates" };
@@ -333,7 +335,7 @@ public class SingleEnemy : CharacterRelated
         text += "Timestamp: ";
         text += Timestamp.Value < 0 ? "Not available" + Environment.NewLine : DateTimeOffset.FromUnixTimeSeconds(Timestamp.Value).DateTime.ToLocalTime() + Environment.NewLine;
         text += "ID: " + Id_num + Environment.NewLine;
-        text += "Weapon: " + Weapons[Weapon_type.Value] + Environment.NewLine;
+        text += "Weapon: " + WeaponNames[Weapon_type.Value] + Environment.NewLine;
         text += "Tome Element: " + Tome_Elem[Tome_class.Value] + Environment.NewLine;
         text += "Movement Type: " + Movement[Move_type.Value] + Environment.NewLine;
         text += Spawnable_Enemy.Value == 0 ? "Randomly spawnable enemy" + Environment.NewLine : "Not randomly spawnable enemy" + Environment.NewLine;
@@ -471,7 +473,7 @@ public class SinglePerson : CharacterRelated
         text += Timestamp.Value < 0 ? "Not available" + Environment.NewLine : DateTimeOffset.FromUnixTimeSeconds(Timestamp.Value).DateTime.ToLocalTime() + Environment.NewLine;
         text += "ID: " + Id_num + Environment.NewLine;
         text += "Sort Value: " + Sort_value + Environment.NewLine;
-        text += "Weapon: " + Weapons[Weapon_type.Value] + Environment.NewLine;
+        text += "Weapon: " + WeaponNames[Weapon_type.Value] + Environment.NewLine;
         text += "Tome Element: " + Tome_Elem[Tome_class.Value] + Environment.NewLine;
         text += "Movement Type: " + Movement[Move_type.Value] + Environment.NewLine;
         text += "Series: " + Series[Series1.Value] + Environment.NewLine;
@@ -930,21 +932,21 @@ public class SingleSkill : CommonRelated
         bool is_Breath = false;
         bool is_Dagger = false;
         String tmp2 = "";
-        for (int i = 0; i < Weapons.Length; i++)
+        for (int i = 0; i < WeaponNames.Length; i++)
         {
             if (((Wep_equip.Value & tmp)>>i) == 1)
             {
                 if (!start)
-                    tmp2 += ", " + Weapons[i];
+                    tmp2 += ", " + WeaponNames[i];
                 else
-                    tmp2 += " " + Weapons[i];
+                    tmp2 += " " + WeaponNames[i];
                 if (Category.Value == 0)
                 {
-                    if (Weapons[i].Contains("Breath"))
+                    if (WeaponsData[i].Is_breath)
                         is_Breath = true;
-                    if (Weapons[i].Contains("Staff"))
+                    if (WeaponsData[i].Is_staff)
                         is_Staff = true;
-                    if (Weapons[i].Contains("Dagger"))
+                    if (WeaponsData[i].Is_dagger)
                         is_Dagger = true;
                 } 
                 start = false;
@@ -1014,13 +1016,13 @@ public class SingleSkill : CommonRelated
         text += Promotion_rarity.Value == 0 ? "" : "Promote if rarity is above " + Promotion_rarity + Environment.NewLine;
         text += Refined.Value == 1 ? "Refined" + Environment.NewLine : "";
         text += Refine_sort_id.Value == 0 ? "" : "Refine Sort:" + Refine_sort_id + Environment.NewLine;
-        text += "Weapon effective against:" + ExtractUtils.BitmaskConvertToString(Wep_effective.Value, Weapons) + Environment.NewLine;
+        text += "Weapon effective against:" + ExtractUtils.BitmaskConvertToString(Wep_effective.Value, WeaponNames) + Environment.NewLine;
         text += "Movement effective against:" + ExtractUtils.BitmaskConvertToString(Mov_effective.Value, Movement) + Environment.NewLine;
-        text += "Weapon shield against:" + ExtractUtils.BitmaskConvertToString(Wep_shield.Value, Weapons) + Environment.NewLine;
+        text += "Weapon shield against:" + ExtractUtils.BitmaskConvertToString(Wep_shield.Value, WeaponNames) + Environment.NewLine;
         text += "Movement shield against:" + ExtractUtils.BitmaskConvertToString(Mov_shield.Value, Movement) + Environment.NewLine;
-        text += "Weapon weakness against:" + ExtractUtils.BitmaskConvertToString(Wep_weakness.Value, Weapons) + Environment.NewLine;
+        text += "Weapon weakness against:" + ExtractUtils.BitmaskConvertToString(Wep_weakness.Value, WeaponNames) + Environment.NewLine;
         text += "Movement weakness against:" + ExtractUtils.BitmaskConvertToString(Mov_weakness.Value, Movement) + Environment.NewLine;
-        text += "Weapon adaptive against:" + ExtractUtils.BitmaskConvertToString(Wep_adaptive.Value, Weapons) + Environment.NewLine;
+        text += "Weapon adaptive against:" + ExtractUtils.BitmaskConvertToString(Wep_adaptive.Value, WeaponNames) + Environment.NewLine;
         text += "Movement adaptive against:" + ExtractUtils.BitmaskConvertToString(Mov_adaptive.Value, Movement) + Environment.NewLine;
         text += "Timing ID: " + Timing_id + Environment.NewLine;
         text += "Ability ID: " + Ability_id + Environment.NewLine;
@@ -1036,7 +1038,7 @@ public class SingleSkill : CommonRelated
             if (!Limit2_params[i].Value.Equals(""))
                 text += "Limit 2 Parameter " + (i + 1) + ": " + Limit2_params[i] + Environment.NewLine;
         }
-        text += "Weapon target:" + ExtractUtils.BitmaskConvertToString(Target_wep.Value, Weapons) + Environment.NewLine;
+        text += "Weapon target:" + ExtractUtils.BitmaskConvertToString(Target_wep.Value, WeaponNames) + Environment.NewLine;
         text += "Movement target:" + ExtractUtils.BitmaskConvertToString(Target_mov.Value, Movement) + Environment.NewLine;
         if(!Passive_next.Value.Equals(""))
             text += getStuff(Passive_next, "Next Enemy Passive: ") + "Next Enemy Passive ID: " + Passive_next + Environment.NewLine;
