@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -16,6 +17,7 @@ namespace FEHDataExtractor
         private ExtractionBase[] a;
         public static int offset = 0x20;
         private String Path;
+        private String MessagePath;
 
         public ExtractionBase[] A { get => a; set => a = value; }
 
@@ -86,8 +88,8 @@ namespace FEHDataExtractor
                         File.WriteAllBytes(PathManip, data);
                     else
                         File.WriteAllText(PathManip, output);
-                    MessageBox.Show("File Processed!", "Success");
                 }
+                MessageBox.Show(openFileDialog1.FileNames.Length > 1 ? "Files processed!" : "File processed!", "Success");
             }
         }
 
@@ -99,6 +101,16 @@ namespace FEHDataExtractor
         private void openFileDialog1_FileOk(object sender, CancelEventArgs e)
         {
 
+        }
+
+        private void messagesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (folderBrowserDialog1.ShowDialog() == DialogResult.OK)
+            {
+                MessagePath = folderBrowserDialog1.SelectedPath;
+                LoadMessages.openFolder(MessagePath);
+                MessageBox.Show("Loaded messages!", "Success");
+            }
         }
     }
 }

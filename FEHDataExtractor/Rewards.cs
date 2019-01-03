@@ -98,7 +98,7 @@ namespace FEHDataExtractor
 
         public override string ToString()
         {
-            String text = Thing[Kind] + ": " + Rew;
+            String text = Thing[Kind] + ": " + (Table.Contains("M" + Rew) ? Table["M" + Rew] : Rew);
             return text;
         }
 
@@ -136,7 +136,7 @@ namespace FEHDataExtractor
 
         public override string ToString()
         {
-            String text = Thing[Kind] + ": " + Rew + " " + Rarity + " Star";
+            String text = Thing[Kind] + ": " + getHeroName(Rew) + " " + Rarity + " Star";
             text += Rarity == 1 ? "" : "s";
             return text;
         }
@@ -159,7 +159,7 @@ namespace FEHDataExtractor
 
         public override string ToString()
         {
-            String text = Ranks[Support] + " " + Thing[Kind] + " with " + Rew;
+            String text = Ranks[Support] + " " + Thing[Kind] + " with " + (Table.Contains("M" + Rew) ? Table["M" + Rew] : Rew);
             return text;
         }
 

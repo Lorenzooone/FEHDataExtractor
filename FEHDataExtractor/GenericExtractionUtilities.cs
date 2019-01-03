@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Text;
 
 public abstract class Xor
@@ -157,6 +159,35 @@ public class Int16Xor : Xor
     public Int16 Value { get => value; set => this.value = value; }
 }
 
+public class LoadMessages
+{
+    private static Messages tmp = new Messages();
+    public static readonly int offset = 0x20;
+
+    public static void openFolder(string path)
+    {
+        if (Directory.Exists(path))
+        {
+            foreach (string p in (new DirectoryInfo(path)).GetFiles().Select(f => f.FullName))
+                openFolder(p);
+            foreach (string p in (new DirectoryInfo(path)).GetDirectories().Select(f => f.FullName))
+                openFolder(p);
+        }
+        else if (File.Exists(path) && Path.GetExtension(path).ToLower().Equals(".lz"))
+        {
+            byte[] data = Decompression.Open(path);
+            if (data != null)
+            {
+                HSDARC a = new HSDARC(0, data);
+                while (a.Ptr_list_length - a.NegateIndex > a.Index)
+                {
+                    tmp.InsertIn(a, offset, data);
+                }
+            }
+        }
+    }
+}
+
 public class ExtractUtils
 {
     public static int getInt(long a, byte[] data)
@@ -199,7 +230,7 @@ public class ExtractUtils
         Byte[] tmp = new Byte[size];
         for (int i = 0; i < size; i++)
             tmp[i] = (data[a + i]);
-        Value = Encoding.UTF8.GetString(tmp);
+        Value = Encoding.UTF8.GetString(tmp).Replace("\n", "\\n").Replace("\r", "\\r");
         return Value;
     }
 }
@@ -212,10 +243,16 @@ public class StringXor : Xor
     {
         Value = "";
         List<byte> tmp = new List<byte>();
-        if (a != offset && a < data.Length) {
+        if (a != offset && a < data.Length)
+        {
             for (int i = 0; a + i < data.Length && data[a + i] != 0; i++)
-                tmp.Add(getDataXorred(data[a + i], i));
-            Value = Encoding.UTF8.GetString(tmp.ToArray());
+            {
+                if (data[a + i] != XorData[i % XorData.Length])
+                    tmp.Add(getDataXorred(data[a + i], i));
+                else
+                    tmp.Add(data[a + i]);
+            }
+            Value = Encoding.UTF8.GetString(tmp.ToArray()).Replace("\n", "\\n").Replace("\r", "\\r");
         }
     }
 

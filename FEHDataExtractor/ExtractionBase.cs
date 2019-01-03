@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 
 public class HSDARC
 {
@@ -46,6 +47,7 @@ public class HSDARC
 public abstract class ExtractionBase
 {
     public static readonly int offset = 0x20;
+    private static Hashtable table = new Hashtable();
     public static readonly String[] Weapons = { "Red Sword", "Blue Lance", "Green Axe", "Red Bow", "Blue Bow", "Green Bow", "Colorless Bow", "Red Dagger", "Blue Dagger", "Green Dagger", "Colorless Dagger", "Red Tome", "Blue Tome", "Green Tome", "Colorless Staff", "Red Breath", "Blue Breath", "Green Breath", "Colorless Breath" };
     public static readonly String[] Tome_Elem = { "None", "Fire", "Thunder", "Wind", "Light", "Dark" };
     public static readonly String[] Movement = { "Infantry", "Armored", "Cavalry", "Flying" };
@@ -68,10 +70,26 @@ public abstract class ExtractionBase
         InsertIn(a, data);
     }
 
+    public string getHeroName(string str)
+    {
+        return (Table.Contains("M" + str) ? (Table["M" + str] + (Table.Contains("M" + str.Insert(3, "_HONOR")) ? " - " + Table["M" + str.Insert(3, "_HONOR")] : "")) : str);
+    }
+
+    public string getStuff(StringXor Str, string otherstring)
+    {
+        return Table.Contains("M" + Str.Value) ? otherstring + Table["M" + Str.Value] + Environment.NewLine : "";
+    }
+
+    public string getStuffExclusive(StringXor Str, string otherstring)
+    {
+        return Table.Contains("M" + Str.Value) ? otherstring + Table["M" + Str.Value] + Environment.NewLine : otherstring + Str + Environment.NewLine;
+    }
+
     public string Name { get; set; }
     public HSDARC Archive { get => archive; set => archive = value; }
     public int Size { get => size; set => size = value; }
     public byte[] ElemXor { get => elemXor; set => elemXor = value; }
+    public static Hashtable Table { get => table; set => table = value; }
 }
 
 public abstract class GCRelated : ExtractionBase
@@ -81,7 +99,7 @@ public abstract class GCRelated : ExtractionBase
 
 public abstract class CommonRelated : ExtractionBase
 {
-    public byte[] Common = { 0x81, 0x00, 0x80, 0xA4, 0x5A, 0x16, 0x6F, 0x78, 0x57, 0x81, 0x2D, 0xF7, 0xFC, 0x66, 0x0F, 0x27, 0x75, 0x35, 0xB4, 0x34, 0x10, 0xEE, 0xA2, 0xDB, 0xCC, 0xE3, 0x35, 0x99, 0x43, 0x48, 0xD2, 0xBB, 0x93, 0xC1 };
+    public static readonly byte[] Common = { 0x81, 0x00, 0x80, 0xA4, 0x5A, 0x16, 0x6F, 0x78, 0x57, 0x81, 0x2D, 0xF7, 0xFC, 0x66, 0x0F, 0x27, 0x75, 0x35, 0xB4, 0x34, 0x10, 0xEE, 0xA2, 0xDB, 0xCC, 0xE3, 0x35, 0x99, 0x43, 0x48, 0xD2, 0xBB, 0x93, 0xC1 };
 }
 
 public abstract class CharacterRelated: CommonRelated
@@ -97,6 +115,20 @@ public abstract class CharacterRelated: CommonRelated
     ByteXor move_type;
     Stats base_stats;
     Stats growth_rates;
+
+    public string getCharacterStuff()
+    {
+        string text = "";
+        if (Table.Contains("M" + Id_tag.ToString()))
+        {
+            text += "Name: " + Table["M" + Id_tag.ToString()] + Environment.NewLine;
+            text += Table.Contains("M" + Id_tag.Value.Insert(3, "_HONOR")) ? "Epithet: " + Table["M" + Id_tag.Value.Insert(3, "_HONOR")] + Environment.NewLine : "";
+            text += Table.Contains("M" + Id_tag.Value.Insert(3, "_H")) ? "Description: " + Table["M" + Id_tag.Value.Insert(3, "_H")].ToString().Replace("\\n", " ").Replace("\\r", " ") + Environment.NewLine : "";
+            text += Table.Contains("M" + Id_tag.Value.Insert(3, "_VOICE")) ? "Voice Actor: " + Table["M" + Id_tag.Value.Insert(3, "_VOICE")] + Environment.NewLine : "";
+            text += Table.Contains("M" + Id_tag.Value.Insert(3, "_ILLUST")) ? "Illustrator: " + Table["M" + Id_tag.Value.Insert(3, "_ILLUST")] + Environment.NewLine : "";
+        }
+        return text;
+    }
 
     public CharacterRelated()
     {
@@ -286,7 +318,9 @@ public class SingleEnemy : CharacterRelated
 
     public override string ToString()
     {
-        String text = "Internal Identifier: " + Id_tag + Environment.NewLine;
+        String text = "";
+        text += getCharacterStuff();
+        text += "Internal Identifier: " + Id_tag + Environment.NewLine;
         text += "Romanized Identifier: " + Roman + Environment.NewLine;
         if (Roman.Value.Equals("NONE"))
         {
@@ -295,7 +329,7 @@ public class SingleEnemy : CharacterRelated
         text += "Face Folder: " + Face_name + Environment.NewLine;
         text += "Face Folder no. 2: " + Face_name2 + Environment.NewLine;
         if (!TopWeapon.Value.Equals(""))
-            text += "Default Weapon: " + TopWeapon + Environment.NewLine;
+            text += getStuffExclusive(TopWeapon, "Default Weapon: ");
         text += "Timestamp: ";
         text += Timestamp.Value < 0 ? "Not available" + Environment.NewLine : DateTimeOffset.FromUnixTimeSeconds(Timestamp.Value).DateTime.ToLocalTime() + Environment.NewLine;
         text += "ID: " + Id_num + Environment.NewLine;
@@ -421,7 +455,9 @@ public class SinglePerson : CharacterRelated
 
     public override string ToString()
     {
-        String text = "Internal Identifier: " + Id_tag + Environment.NewLine;
+        String text = "";
+        text += getCharacterStuff();
+        text += "Internal Identifier: " + Id_tag + Environment.NewLine;
         text += "Romanized Identifier: " + Roman + Environment.NewLine;
         if (Roman.Value.Equals("NONE"))
         {
@@ -454,7 +490,7 @@ public class SinglePerson : CharacterRelated
             text += i == 0 ? "" : "s";
             text += " Rarity Skills -------------------------------------------------------------------------" + Environment.NewLine;
             for (int j = 0; j < PrintSkills.Length; j++)
-                text += PrintSkills[j] + Skills[i, j] + Environment.NewLine;
+                text += getStuffExclusive(Skills[i, j], PrintSkills[j]);
             if(i == (Skills.Length / PrintSkills.Length) -1)
                 text += "-----------------------------------------------------------------------------------------------" + Environment.NewLine;
         }
@@ -857,20 +893,23 @@ public class SingleSkill : CommonRelated
 
     public override string ToString()
     {
-        String text = "Internal Identifier: " + Id_tag + Environment.NewLine;
+        String text = "";
+        text += Table.Contains(Name_id.Value) ? "Name: " + Table[Name_id.Value] + Environment.NewLine : "";
+        text += Table.Contains(Desc_id.Value) ? "Description: " + Table[Desc_id.Value].ToString().Replace("\\n", " ").Replace("\\r", " ") + Environment.NewLine : "";
+        text += "Internal Identifier: " + Id_tag + Environment.NewLine;
         if (!Refine_base.Value.Equals(""))
-            text += "Base Weapon: " + Refine_base + Environment.NewLine;
+            text += getStuff(Refine_base, "Base Weapon: ") + "Base Weapon ID: " + Refine_base + Environment.NewLine;
         text += "Name Identifier: " + Name_id + Environment.NewLine;
         text += "Description Identifier: " + Desc_id + Environment.NewLine;
         if (!Refine_id.Value.Equals(""))
-            text += "Refine Identifier: " + Refine_id + Environment.NewLine;
+            text += getStuff(Refine_id, "Refine: ") + "Refine ID: " + Refine_id + Environment.NewLine;
         for (int i = 0; i < Prerequisites.Length; i++)
         {
             if(!Prerequisites[i].Value.Equals(""))
-                text += "Prerequisite Skill: " + Prerequisites[i] + Environment.NewLine;
+                text += getStuff(Prerequisites[i], "Prerequisite Skill: ") + "Prerequisite Skill ID: " + Prerequisites[i] + Environment.NewLine;
         }
         if (!Next_skill.Value.Equals(""))
-            text += "Next Enemy Skill: " + Next_skill + Environment.NewLine;
+            text += getStuff(Next_skill, "Next Enemy Skill: ") + "Next Enemy Skill ID: " + Next_skill + Environment.NewLine;
         if (!Sprites[0].Value.Equals(""))
             text += "Bow Sprite: " + Sprites[0] + Environment.NewLine;
         if (!Sprites[1].Value.Equals(""))
@@ -1000,15 +1039,15 @@ public class SingleSkill : CommonRelated
         text += "Weapon target:" + ExtractUtils.BitmaskConvertToString(Target_wep.Value, Weapons) + Environment.NewLine;
         text += "Movement target:" + ExtractUtils.BitmaskConvertToString(Target_mov.Value, Movement) + Environment.NewLine;
         if(!Passive_next.Value.Equals(""))
-            text += "Next Enemy Passive: " + Passive_next + Environment.NewLine;
+            text += getStuff(Passive_next, "Next Enemy Passive: ") + "Next Enemy Passive ID: " + Passive_next + Environment.NewLine;
         text += "Timestamp: ";
         text += Timestamp.Value < 0 ? "Not available" + Environment.NewLine : DateTimeOffset.FromUnixTimeSeconds(Timestamp.Value).DateTime.ToLocalTime() + Environment.NewLine;
         text += Min_lv.Value == 0 ? "" : "Minimum Enemy Level: " + Min_lv + Environment.NewLine;
         text += Max_lv.Value == 0 ? "" : "Maximum Enemy Level: " + Max_lv + Environment.NewLine;
         if (!Next_seal.Value.Equals(""))
-            text += "Next Seal: " + Next_seal + Environment.NewLine;
+            text += getStuff(Next_seal, "Next Seal: ") + "Next Seal ID: " + Next_seal + Environment.NewLine;
         if (!Prev_seal.Value.Equals(""))
-            text += "Previous Seal: " + Prev_seal + Environment.NewLine;
+            text += getStuff(Prev_seal, "Previous Seal: ") + "Previous Seal ID: " + Prev_seal + Environment.NewLine;
         text += Ss_coin.Value == 0 ? "" : "Sacred Seal required Coins: " + Ss_coin + Environment.NewLine;
         text += Ss_coin.Value == 0 ? "" : "Sacred Seal required Badge type: " + BadgeColor[Ss_badge_type.Value] + Environment.NewLine;
         text += Ss_coin.Value == 0 ? "" : "Sacred Seal required Badges: " + Ss_badge + Environment.NewLine;
@@ -1092,6 +1131,17 @@ public class GenericText : CommonRelated
         Name = "Generic Text";
     }
 
+    public string getVals(string i)
+    {
+        string text = "";
+        text = getHeroName(i);
+        if (text.Equals(i) && i.Length > 1)
+        {
+            text = Table.Contains("MID_SCF_" + i.Remove(i.Length - 1)) ? Table["MID_SCF_" + i.Remove(i.Length - 1)].ToString() : i;
+        }
+        return text;
+    }
+
     public GenericText(long a, byte[] data) : this()
     {
         InsertIn(a, data);
@@ -1113,12 +1163,55 @@ public class GenericText : CommonRelated
         String text = "";
         for (int i = 0; i < Elements.Length; i++)
         {
-            text += Elements[i] + Environment.NewLine;
+                text += getVals(Elements[i].Value) + Environment.NewLine;
         }
 
         return text;
     }
 
+}
+
+public class Messages : ExtractionBase
+{
+    private string[,] translatedMessages;
+    private long numElem;
+    public static readonly byte[] MSG = { 0x6F, 0xB0, 0x8F, 0xD6, 0xEF, 0x6A, 0x5A, 0xEB, 0xC6, 0x76, 0xF6, 0xE5, 0x56, 0x9D, 0xB8, 0x08, 0xE0, 0xBD, 0x93, 0xBA, 0x05, 0xCC, 0x26, 0x56, 0x65, 0x1E, 0xF8, 0x2B, 0xF9, 0xA1, 0x7E, 0x41, 0x18, 0x21, 0xA4, 0x94, 0x25, 0x08, 0xB8, 0x38, 0x2B, 0x98, 0x53, 0x76, 0xC6, 0x2E, 0x73, 0x5D, 0x74, 0xCB, 0x02, 0xE8, 0x98, 0xAB, 0xD0, 0x36, 0xE5, 0x37 };
+
+    public Messages()
+    {
+        Name = "Messages";
+        Size = 0x10;
+    }
+    public Messages(long a, byte[] data) : this()
+    {
+        InsertIn(a, data);
+    }
+
+    public string[,] TranslatedMessages { get => translatedMessages; set => translatedMessages = value; }
+    public long NumElem { get => numElem; set => numElem = value; }
+
+    public override void InsertIn(long a, byte[] data)
+    {
+        NumElem = ExtractUtils.getLong(a, data);
+        TranslatedMessages = new string[NumElem, 2];
+        for (int i = 0; i < NumElem; i++)
+        {
+            TranslatedMessages[i, 0] = new StringXor(ExtractUtils.getLong(a + 8 + (i * Size), data) + offset, data, MSG).ToString();
+            Archive.Index++;
+            TranslatedMessages[i, 1] = new StringXor(ExtractUtils.getLong(a + 0x10 + (i * Size), data) + offset, data, MSG).ToString();
+            Archive.Index++;
+            if (!Table.Contains(TranslatedMessages[i, 0]))
+                Table.Add(TranslatedMessages[i, 0], TranslatedMessages[i, 1]);
+        }
+    }
+
+    public override string ToString()
+    {
+        String text = "";
+        for (int i = 0; i < NumElem; i++)
+            text += TranslatedMessages[i,0] + ": " + TranslatedMessages[i,1] + Environment.NewLine;
+        return text;
+    }
 }
 
 public class BaseExtractArchive<T> : ExtractionBase where T : ExtractionBase, new()

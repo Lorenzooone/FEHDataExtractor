@@ -100,6 +100,7 @@ namespace FEHDataExtractor
             string text = "ID: " + Id_tag + Environment.NewLine;
             text += "Image: " + Image + Environment.NewLine;
             text += "ID 2: " + Id_tag2 + Environment.NewLine;
+            text += getStuff(ExternalID, "Name: ");
             text += "External ID: " + ExternalID + Environment.NewLine;
             text += "Start time: " + (Start.Value < 0 ? "Not available" : DateTimeOffset.FromUnixTimeSeconds(Start.Value).DateTime.ToLocalTime().ToString()) + Environment.NewLine;
             text += "End time: " + (Finish.Value < 0 ? "Not available" : DateTimeOffset.FromUnixTimeSeconds(Finish.Value).DateTime.ToLocalTime().ToString()) + Environment.NewLine;
@@ -182,7 +183,7 @@ namespace FEHDataExtractor
         public override string ToString()
         {
             string text = "Map Collection ID: " + Id + Environment.NewLine;
-            text += "Boss: " + Boss + Environment.NewLine;
+            text += "Boss: " + getHeroName(Boss.Value) + Environment.NewLine;
             text += "Possible Maps:" + Environment.NewLine;
             for (int i = 0; i < Possible_maps.Length; i++)
                 text += Possible_maps[i];
@@ -277,7 +278,7 @@ namespace FEHDataExtractor
             text += "Bonus: " + (Bonus.Value - 100).ToString() + "%" + Environment.NewLine;
             for (int i = 0; i < Bonus_units_name.Length; i++)
             {
-                text += Bonus_units_name[i] + Environment.NewLine;
+                text += getHeroName(Bonus_units_name[i].Value) + Environment.NewLine;
             }
             return text;
         }

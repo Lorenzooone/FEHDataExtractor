@@ -47,7 +47,7 @@ namespace FEHDataExtractor
         {
             string text = "";
             if (!Hero_id.Value.Equals(""))
-                text += Hero_id + ", ";
+                text += getHeroName(Hero_id.Value) + ", ";
             text += Color.Value != -1 ? "Color: " + Colours[Color.Value] + ", " : "";
             text += Wep_type.Value != -1 ? "Weapon: " + Weapons[Wep_type.Value] + ", " : "";
             text += Mov_type.Value != -1 ? "Movement: " + Movement[Mov_type.Value] + ", " : "";
@@ -124,7 +124,18 @@ namespace FEHDataExtractor
 
         public override string ToString()
         {
-            string text = "ID: " + Quest_id + Environment.NewLine;
+            string text = "";
+            if (Common_id.Value.Equals(""))
+            {
+                text += (Table.Contains("MID_MISSION_" + Quest_id) ? "Quest Name: " + Table["MID_MISSION_" + Quest_id] + Environment.NewLine : "");
+                text += (Table.Contains("MID_MISSION_H_" + Quest_id) ? "Quest Description: " + Table["MID_MISSION_H_" + Quest_id].ToString().Replace("\\n", " ").Replace("\\r", " ") + Environment.NewLine : "");
+            }
+            else
+            {
+                text += (Table.Contains("MID_MISSION_" + Common_id) ? "Quest Name: " + Table["MID_MISSION_" + Common_id] + Environment.NewLine : "");
+                text += (Table.Contains("MID_MISSION_H_" + Common_id) ? "Quest Description: " + Table["MID_MISSION_H_" + Common_id].ToString().Replace("\\n", " ").Replace("\\r", " ") + Environment.NewLine : "");
+            }
+            text += "ID: " + Quest_id + Environment.NewLine;
             if (!Common_id.Value.Equals(""))
                 text += "Shared ID: " + Common_id + Environment.NewLine;
             text += "Has to be done: " + Times + (Times.Value == 1 ? " Time":" Times") + Environment.NewLine;
@@ -297,7 +308,8 @@ namespace FEHDataExtractor
         public override string ToString()
         {
             String text = "Quest Group ID: " + Id_tag + Environment.NewLine;
-            text += "Quest Group Group: " + Group + Environment.NewLine;
+            text += Table.Contains("MID_MISSION_" + Group) ? "Quest Group Name: " + Table["MID_MISSION_" + Group] +Environment.NewLine : "";
+            text += "Quest Group: " + Group + Environment.NewLine;
             text += "Start time: " + (Start.Value < 0 ? "Not available" : DateTimeOffset.FromUnixTimeSeconds(Start.Value).DateTime.ToLocalTime().ToString()) + Environment.NewLine;
             text += "End time: " + (Finish.Value < 0 ? "Not available" : DateTimeOffset.FromUnixTimeSeconds(Finish.Value).DateTime.ToLocalTime().ToString()) + Environment.NewLine;
             text += "Sort ID: " + Sort_id + Environment.NewLine;
