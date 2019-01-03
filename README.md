@@ -2,19 +2,23 @@
 
 A Data Extractor for FEH files. For now it supports:
 
-Heroes (/Common/SRPG/Person)
+Heroes (assets/Common/SRPG/Person)
 
-Enemies (/Common/SRPG/Enemy)
+Enemies (assets/Common/SRPG/Enemy)
 
-Generic Text search in files (/Common/.*)
+Generic Text search in files (assets/Common/.*)
 
-Grand Conquest Map Settings (/Common/Occupation/World)
+Grand Conquest Map Settings (assets/Common/Occupation/World)
 
-Skills (/Common/SRPG/Skill)
+Skills (assets/Common/SRPG/Skill)
 
-Quests (/Common/Mission)
+Quests (assets/Common/Mission)
 
-Tempest Trial (/Common/SRPG/SequentialMap) BETA!
+Tempest Trial (assets/Common/SRPG/SequentialMap) BETA!
+
+Messages (assets/*/Message/**/*.bin)
+
+To have translated output, use the menu option Load -> Messages and choose the folder with the language of choice. If all goes well, the output will be translated.
 
 In the future it will support more things. Supports auto decompression.
 
