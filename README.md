@@ -41,6 +41,7 @@ Here's what you can get with it:
 * __Arena Bonus Units__ ( Examine files in the /assets/Common/Delivery/ArenaPerson folder)
 * __Aether Raids Bonus Units and Structures__  (Examine files in the /assets/Common/SkyCastle/BattleData folder)
 * __New Sacred Seals__ (Examine files in the /assets/Common/SRPG/SkillAccessory folder)
+* __New Accessories__ (Examine files in the /assets/Common/DressAccessory/Data folder)
 * Pieces of text from other files
 
 In general, Generic Text can be pretty useful when you don't have a way to decompile the things yet.
