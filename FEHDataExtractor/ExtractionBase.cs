@@ -49,7 +49,7 @@ public abstract class ExtractionBase
 {
     public static readonly int offset = 0x20;
     private static Hashtable table = new Hashtable();
-    public static String[] WeaponNames = { "Sword", "Lance", "Axe", "Red Bow", "Blue Bow", "Green Bow", "Bow", "Red Dagger", "Blue Dagger", "Green Dagger", "Dagger", "Red Tome", "Blue Tome", "Green Tome", "Staff", "Red Breath", "Blue Breath", "Green Breath", "Colorless Breath" };
+    public static String[] WeaponNames = { "Sword", "Lance", "Axe", "Red Bow", "Blue Bow", "Green Bow", "Bow", "Red Dagger", "Blue Dagger", "Green Dagger", "Dagger", "Red Tome", "Blue Tome", "Green Tome", "Staff", "Red Breath", "Blue Breath", "Green Breath", "Colorless Breath", "Red Beaststone", "Blue Beaststone", "Green Beaststone", "Colorless Beaststone" };
     public static SingleWeaponClass[] WeaponsData;
     public static readonly String[] Tome_Elem = { "None", "Fire", "Thunder", "Wind", "Light", "Dark" };
     public static readonly String[] Movement = { "Infantry", "Armored", "Cavalry", "Flying" };
@@ -142,6 +142,97 @@ public abstract class CharacterRelated: CommonRelated
         return text;
     }
 
+    private string SuperStats(Stats Base_stats, Stats Growth_rates, Stats lvl40, bool greater, string phrase)
+    {
+        string text = "";
+        int growthInc = 5;
+        if (!greater)
+            growthInc = -5;
+        Stats newRates = new Stats();
+        newRates.Hp.Value = (short)(Growth_rates.Hp.Value + growthInc);
+        newRates.Atk.Value = (short)(Growth_rates.Atk.Value + growthInc);
+        newRates.Spd.Value = (short)(Growth_rates.Spd.Value + growthInc);
+        newRates.Def.Value = (short)(Growth_rates.Def.Value + growthInc);
+        newRates.Res.Value = (short)(Growth_rates.Res.Value + growthInc);
+        int i = 1;
+        if (!greater)
+            i = -1;
+        int val = 4;
+        Stats newBaseStats = new Stats();
+        newBaseStats.Hp.Value = (short)(Base_stats.Hp.Value + i);
+        newBaseStats.Atk.Value = (short)(Base_stats.Atk.Value + i);
+        newBaseStats.Spd.Value = (short)(Base_stats.Spd.Value + i);
+        newBaseStats.Def.Value = (short)(Base_stats.Def.Value + i);
+        newBaseStats.Res.Value = (short)(Base_stats.Res.Value + i);
+        Stats tmpStats = new Stats(newBaseStats, newRates);
+        int len = 0;
+        if ((greater && tmpStats.Hp.Value - val >= lvl40.Hp.Value) || (! greater && tmpStats.Hp.Value + val <= lvl40.Hp.Value))
+        {
+            len++;
+        }
+        if ((greater && tmpStats.Atk.Value - val >= lvl40.Atk.Value) || (!greater && tmpStats.Atk.Value + val <= lvl40.Atk.Value))
+        {
+            len++;
+        }
+        if ((greater && tmpStats.Spd.Value - val >= lvl40.Spd.Value) || (!greater && tmpStats.Spd.Value + val <= lvl40.Spd.Value))
+        {
+            len++;
+        }
+        if ((greater && tmpStats.Def.Value - val >= lvl40.Def.Value) || (!greater && tmpStats.Def.Value + val <= lvl40.Def.Value))
+        {
+            len++;
+        }
+        if ((greater && tmpStats.Res.Value - val >= lvl40.Res.Value) || (!greater && tmpStats.Res.Value + val <= lvl40.Res.Value))
+        {
+            len++;
+        }
+        text += len > 0 ? len > 1 ? phrase + "s: " : phrase + ": " : "";
+
+        if ((greater && tmpStats.Hp.Value - val >= lvl40.Hp.Value) || (!greater && tmpStats.Hp.Value + val <= lvl40.Hp.Value))
+        {
+            text += "Hp";
+            len--;
+            if (len > 0)
+                text += ", ";
+        }
+        if ((greater && tmpStats.Atk.Value - val >= lvl40.Atk.Value) || (!greater && tmpStats.Atk.Value + val <= lvl40.Atk.Value))
+        {
+            text += "Atk";
+            len--;
+            if (len > 0)
+                text += ", ";
+        }
+        if ((greater && tmpStats.Spd.Value - val >= lvl40.Spd.Value) || (!greater && tmpStats.Spd.Value + val <= lvl40.Spd.Value))
+        {
+            text += "Spd";
+            len--;
+            if (len > 0)
+                text += ", ";
+        }
+        if ((greater && tmpStats.Def.Value - val >= lvl40.Def.Value) || (!greater && tmpStats.Def.Value + val <= lvl40.Def.Value))
+        {
+            text += "Def";
+            len--;
+            if (len > 0)
+                text += ", ";
+        }
+        if ((greater && tmpStats.Res.Value - val >= lvl40.Res.Value) || (!greater && tmpStats.Res.Value + val <= lvl40.Res.Value))
+        {
+            text += "Res";
+            len--;
+            if (len > 0)
+                text += ", ";
+        }
+
+        return text;
+
+    }
+
+    public string SuperBoonBane(Stats Base_stats, Stats Growth_rates, Stats lvl40)
+    {
+        return (SuperStats(Base_stats, Growth_rates, lvl40, true, "Superboon").Equals("") ? "" : SuperStats(Base_stats, Growth_rates, lvl40, true, "Superboon") + Environment.NewLine) + (SuperStats(Base_stats, Growth_rates, lvl40, false, "Superbane").Equals("") ? "" : SuperStats(Base_stats, Growth_rates, lvl40, false, "Superbane") + Environment.NewLine);
+    }
+
     public CharacterRelated()
     {
         Size = 79;
@@ -186,11 +277,11 @@ public class Stats : ExtractionBase
 
     public Stats(Stats Level1, Stats Growths):this()
     {
-        Hp.Value = (short)(Level1.Hp.Value + (0.39 * (Growths.Hp.Value * 1.14 + 0.005) + 0.005));
-        Atk.Value = (short)(Level1.Atk.Value + (0.39 * (Growths.Atk.Value * 1.14 + 0.005) + 0.005));
-        Spd.Value = (short)(Level1.Spd.Value + (0.39 * (Growths.Spd.Value * 1.14 + 0.005) + 0.005));
-        Def.Value = (short)(Level1.Def.Value + (0.39 * (Growths.Def.Value * 1.14 + 0.005) + 0.005));
-        Res.Value = (short)(Level1.Res.Value + (0.39 * (Growths.Res.Value * 1.14 + 0.005) + 0.005));
+        Hp.Value = (short)(Level1.Hp.Value + (int)(0.39f * ((int)(Growths.Hp.Value * 1.14f + 0.000005f))));
+        Atk.Value = (short)(Level1.Atk.Value + (int)(0.39f * ((int)(Growths.Atk.Value * 1.14f + 0.000005f))));
+        Spd.Value = (short)(Level1.Spd.Value + (int)(0.39f * ((int)(Growths.Spd.Value * 1.14f + 0.000005f))));
+        Def.Value = (short)(Level1.Def.Value + (int)(0.39f * ((int)(Growths.Def.Value * 1.14f + 0.000005f))));
+        Res.Value = (short)(Level1.Res.Value + (int)(0.39f * ((int)(Growths.Res.Value * 1.14f + 0.000005f))));
     }
 
     override public String ToString()
@@ -354,6 +445,8 @@ public class SingleEnemy : CharacterRelated
         Stats tmp = new Stats(Base_stats, Growth_rates);
         text += "5 Stars Level 40 Stats: " + tmp;
         text += "Growth Rates: " + Growth_rates;
+        text += "BST: " + (tmp.Hp.Value + tmp.Atk.Value + tmp.Spd.Value + tmp.Def.Value + tmp.Res.Value) + Environment.NewLine;
+        text += SuperBoonBane(Base_stats, Growth_rates, tmp);
         text += "-----------------------------------------------------------------------------------------------" + Environment.NewLine;
 
         return text;
@@ -495,6 +588,9 @@ public class SinglePerson : CharacterRelated
         Stats tmp = new Stats(Base_stats, Growth_rates);
         text += "5 Stars Level 40 Stats: " + tmp;
         text += "Growth Rates: " + Growth_rates;
+        text += "BST: " + (tmp.Hp.Value + tmp.Atk.Value + tmp.Spd.Value + tmp.Def.Value + tmp.Res.Value) + Environment.NewLine;
+        text += SuperBoonBane(Base_stats, Growth_rates, tmp);
+        text += "Growth Rates Total: " + (Growth_rates.Hp.Value + Growth_rates.Atk.Value + Growth_rates.Spd.Value + Growth_rates.Def.Value + Growth_rates.Res.Value) + Environment.NewLine;
         text += "Enemy Stats: " + Max_stats;
         for (int i = 0; i < Skills.Length / PrintSkills.Length; i++)
         {

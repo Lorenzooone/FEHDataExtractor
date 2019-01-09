@@ -23,7 +23,7 @@ namespace FEHDataExtractor
 
         public static void initializeWeapons()
         {
-            SingleWeaponClass[] a = new SingleWeaponClass[19];
+            SingleWeaponClass[] a = new SingleWeaponClass[23];
             a[0] = new SingleWeaponClass("Sword", 0, "Red", 1, false, false, false, false);
             a[1] = new SingleWeaponClass("Lance", 1, "Blue", 1, false, false, false, false);
             a[2] = new SingleWeaponClass("Axe", 2, "Green", 1, false, false, false, false);
@@ -43,6 +43,10 @@ namespace FEHDataExtractor
             for (int i = 0; i < 4; i++)
             {
                 a[i + 15] = new SingleWeaponClass(ExtractionBase.Colours[i] + " Breath", 15 + i, ExtractionBase.Colours[i], 1, true, false, false, true);
+            }
+            for (int i = 0; i < 4; i++)
+            {
+                a[i + 19] = new SingleWeaponClass(ExtractionBase.Colours[i] + " Beaststone", 19 + i, ExtractionBase.Colours[i], 1, false, false, false, false);
             }
             ExtractionBase.WeaponsData = a;
         }
