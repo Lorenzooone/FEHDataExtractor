@@ -1122,30 +1122,30 @@ public class SingleSkill : CommonRelated
         text += Promotion_rarity.Value == 0 ? "" : "Promote if rarity is above " + Promotion_rarity + Environment.NewLine;
         text += Refined.Value == 1 ? "Refined" + Environment.NewLine : "";
         text += Refine_sort_id.Value == 0 ? "" : "Refine Sort:" + Refine_sort_id + Environment.NewLine;
-        text += "Weapon effective against:" + ExtractUtils.BitmaskConvertToString(Wep_effective.Value, WeaponNames) + Environment.NewLine;
-        text += "Movement effective against:" + ExtractUtils.BitmaskConvertToString(Mov_effective.Value, Movement) + Environment.NewLine;
-        text += "Weapon shield against:" + ExtractUtils.BitmaskConvertToString(Wep_shield.Value, WeaponNames) + Environment.NewLine;
-        text += "Movement shield against:" + ExtractUtils.BitmaskConvertToString(Mov_shield.Value, Movement) + Environment.NewLine;
-        text += "Weapon weakness against:" + ExtractUtils.BitmaskConvertToString(Wep_weakness.Value, WeaponNames) + Environment.NewLine;
-        text += "Movement weakness against:" + ExtractUtils.BitmaskConvertToString(Mov_weakness.Value, Movement) + Environment.NewLine;
-        text += "Weapon adaptive against:" + ExtractUtils.BitmaskConvertToString(Wep_adaptive.Value, WeaponNames) + Environment.NewLine;
-        text += "Movement adaptive against:" + ExtractUtils.BitmaskConvertToString(Mov_adaptive.Value, Movement) + Environment.NewLine;
+        text += Wep_effective.Value == 0 ? "" : "Weapon effective against:" + ExtractUtils.BitmaskConvertToString(Wep_effective.Value, WeaponNames) + Environment.NewLine;
+        text += Mov_effective.Value == 0 ? "" : "Movement effective against:" + ExtractUtils.BitmaskConvertToString(Mov_effective.Value, Movement) + Environment.NewLine;
+        text += Wep_shield.Value == 0 ? "" : "Weapon shield against:" + ExtractUtils.BitmaskConvertToString(Wep_shield.Value, WeaponNames) + Environment.NewLine;
+        text += Mov_shield.Value == 0 ? "" : "Movement shield against:" + ExtractUtils.BitmaskConvertToString(Mov_shield.Value, Movement) + Environment.NewLine;
+        text += Wep_weakness.Value == 0 ? "" : "Weapon weakness against:" + ExtractUtils.BitmaskConvertToString(Wep_weakness.Value, WeaponNames) + Environment.NewLine;
+        text += Mov_weakness.Value == 0 ? "" : "Movement weakness against:" + ExtractUtils.BitmaskConvertToString(Mov_weakness.Value, Movement) + Environment.NewLine;
+        text += Wep_adaptive.Value == 0 ? "" : "Weapon adaptive against:" + ExtractUtils.BitmaskConvertToString(Wep_adaptive.Value, WeaponNames) + Environment.NewLine;
+        text += Mov_adaptive.Value == 0 ? "" : "Movement adaptive against:" + ExtractUtils.BitmaskConvertToString(Mov_adaptive.Value, Movement) + Environment.NewLine;
         text += "Timing ID: " + Timing_id + Environment.NewLine;
         text += "Ability ID: " + Ability_id + Environment.NewLine;
         text += "Limit 1 ID: " + Limit1_id + Environment.NewLine;
         for (int i = 0; i < Limit1_params.Length; i++)
         {
-            if (!Limit1_params[i].Value.Equals(""))
+            if (Limit1_id.Value != 0 && !Limit1_params[i].Value.Equals(""))
                 text += "Limit 1 Parameter " + (i + 1) + ": " + Limit1_params[i] + Environment.NewLine;
         }
         text += "Limit 2 ID: " + Limit2_id + Environment.NewLine;
         for (int i = 0; i < Limit2_params.Length; i++)
         {
-            if (!Limit2_params[i].Value.Equals(""))
+            if (Limit2_id.Value != 0 && !Limit2_params[i].Value.Equals(""))
                 text += "Limit 2 Parameter " + (i + 1) + ": " + Limit2_params[i] + Environment.NewLine;
         }
-        text += "Weapon target:" + ExtractUtils.BitmaskConvertToString(Target_wep.Value, WeaponNames) + Environment.NewLine;
-        text += "Movement target:" + ExtractUtils.BitmaskConvertToString(Target_mov.Value, Movement) + Environment.NewLine;
+        text += Target_wep.Value == 0 ? "" : "Weapon target:" + ExtractUtils.BitmaskConvertToString(Target_wep.Value, WeaponNames) + Environment.NewLine;
+        text += Target_mov.Value == 0 ? "" : "Movement target:" + ExtractUtils.BitmaskConvertToString(Target_mov.Value, Movement) + Environment.NewLine;
         if(!Passive_next.Value.Equals(""))
             text += getStuff(Passive_next, "Next Enemy Passive: ") + "Next Enemy Passive ID: " + Passive_next + Environment.NewLine;
         text += "Timestamp: ";
