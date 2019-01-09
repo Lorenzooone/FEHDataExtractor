@@ -27,5 +27,5 @@ In the future it will support more things. Supports auto decompression.
 Credits
 =====
 
-*Thanks to https://github.com/SciresM/FEAT and https://github.com/einstein95/dsdecmp for the base of the decompression code.
-*Thanks to https://github.com/HertzDevil for RE documentation and structures.
+* Thanks to https://github.com/SciresM/FEAT and https://github.com/einstein95/dsdecmp for the base of the decompression code.
+* Thanks to https://github.com/HertzDevil for RE documentation and structures.
