@@ -1,28 +1,31 @@
 # FEHDataExtractor
+
+A Data Extractor for FEH files.
+
 Features
 =====
 
-A __Data Extractor for FEH__ files. For now it supports:
+The Extractor gives the following options to obtain data from files:
 
-__Heroes__ (assets/Common/SRPG/Person)
+* __Heroes__ (assets/Common/SRPG/Person)
 
-__Enemies__ (assets/Common/SRPG/Enemy)
+* __Enemies__ (assets/Common/SRPG/Enemy)
 
-__Generic Text__ search in files (assets/Common/.*)
+* __Generic Text__ search in files (assets/Common/.*)
 
-__Grand Conquest Map Settings__ (assets/Common/Occupation/World)
+* __Grand Conquest Map Settings__ (assets/Common/Occupation/World)
 
-__Skills__ (assets/Common/SRPG/Skill)
+* __Skills__ (assets/Common/SRPG/Skill)
 
-__Quests__ (assets/Common/Mission)
+* __Quests__ (assets/Common/Mission)
 
-__Tempest Trials__ (assets/Common/SRPG/SequentialMap) __BETA!__
+* __Tempest Trials__ (assets/Common/SRPG/SequentialMap) __BETA!__
 
-__Messages__ (assets/*/Message/**/*.bin)
+* __Messages__ (assets/*/Message/**/*.bin)
 
-__Weapon Classes__ (assets/Common/SRPG/Weapon.bin.lz)
+* __Weapon Classes__ (assets/Common/SRPG/Weapon.bin.lz)
 
-__Forging Bonds__ (assets/Common/Portrait) __BETA!__
+* __Forging Bonds__ (assets/Common/Portrait) __BETA!__
 
 To have translated output, use the menu option Load -> Messages and choose the folder with the .lz files of the chosen language. If all goes well, the output will be translated. The output will also be written to the specified folder and its subfolders. (Example: choosing USEN/Message as the folder will get all the translated text)
 
