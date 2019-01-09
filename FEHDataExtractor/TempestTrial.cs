@@ -28,7 +28,7 @@ namespace FEHDataExtractor
 
         public TempestTrial()
         {
-            Name = "Tempest Trial";
+            Name = "Tempest Trials";
             Size = 144;
             ElemXor = new byte[]{ 0x37, 0x54, 0x19, 0xC5, 0xE6, 0xFE, 0x7C, 0x03 };
 
