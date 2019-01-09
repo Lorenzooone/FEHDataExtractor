@@ -10,7 +10,7 @@ The Extractor gives the following options to obtain data from files:
 * __Heroes__ (assets/Common/SRPG/Person)
 * __Enemies__ (assets/Common/SRPG/Enemy)
 * __Generic Text__ search in files (assets/Common/.*)
-* __GC World__ (assets/Common/Occupation/World) or the Grand Conquest Map Settings
+* __GC World__ (assets/Common/Occupation/World), also known as the Grand Conquest Map Settings
 * __Skills__ (assets/Common/SRPG/Skill)
 * __Quests__ (assets/Common/Mission)
 * __Tempest Trials__ (assets/Common/SRPG/SequentialMap) __BETA!__
