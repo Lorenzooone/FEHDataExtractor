@@ -21,23 +21,18 @@ The Extractor gives the following options to obtain data from files:
 
 In the future it will support more things. Supports auto decompression.
 
-Credits
+Usage
 =====
 
-* Thanks to https://github.com/SciresM/FEAT and https://github.com/einstein95/dsdecmp for the base of the decompression code.
-* Thanks to https://github.com/HertzDevil for RE documentation, methods and data structures.
-
-## Tutorials
-
-### Loading Localization (First thing you should do)
+## Loading Localization (First thing you should do)
 
 To have translated output, use the top menu option Load -> Messages and choose the folder with the .lz files of the chosen language. If all goes well, the output will be translated. The output will also be written to the specified folder and its subfolders. (Example: choosing USEN/Message as the folder will get all the US English translated text)
 
-### Reading data - Heroes, Enemies, Grand Conquest Map Settings, Skills, Quests, Tempest Trials, Weapon Classes and Forging Bonds -
+## Reading data - Heroes, Enemies, Grand Conquest Map Settings, Skills, Quests, Tempest Trials, Weapon Classes and Forging Bonds -
 
 To read heroes' data, use the top menu option File -> Open and choose the files you want to examine in the folders suggested above. Choose the corresponding option in the dropdown box and click Extract. 
 
-### Generic Text and its uses
+## Generic Text and its uses
 
 Generic Text tries to read all strings from a file with the Common Xor.
 
@@ -49,6 +44,12 @@ Here's what you can get with it:
 
 In general, Generic Text can be pretty useful when you don't have a way to decompile the things yet.
 
-### In case of Weapon Classes update
+## In case of Weapon Classes update
 
 If an update that adds Weapon classes comes to the game, load the messages and then examine assets/Common/SRPG/Weapon.bin.lz with the Weapon Classes option. This will add the new weapons in for the time being and you will be able to examine what you want without the extractor crashing. An update will come later adding them to the default weapons.
+
+Credits
+=====
+
+* Thanks to https://github.com/SciresM/FEAT and https://github.com/einstein95/dsdecmp for the base of the decompression code.
+* Thanks to https://github.com/HertzDevil for RE documentation, methods and data structures.
