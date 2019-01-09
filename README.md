@@ -10,7 +10,7 @@ The Extractor gives the following options to obtain data from files:
 * __Heroes__ (assets/Common/SRPG/Person)
 * __Enemies__ (assets/Common/SRPG/Enemy)
 * __Generic Text__ search in files (assets/Common/.*)
-* __Grand Conquest Map Settings__ (assets/Common/Occupation/World)
+* __Grand Conquest Map Settings__ (assets/Common/Occupation/World) or GC World
 * __Skills__ (assets/Common/SRPG/Skill)
 * __Quests__ (assets/Common/Mission)
 * __Tempest Trials__ (assets/Common/SRPG/SequentialMap) __BETA!__
@@ -30,7 +30,7 @@ To have translated output, use the top menu option Load -> Messages and choose t
 
 ## Reading data - Heroes, Enemies, Grand Conquest Map Settings, Skills, Quests, Tempest Trials, Weapon Classes and Forging Bonds -
 
-To read heroes' data, use the top menu option File -> Open and choose the files you want to examine in the folders suggested above. Choose the corresponding option in the dropdown box and click Extract. 
+To read all the above data, use the top menu option File -> Open and choose the files you want to examine in the folders suggested above. Choose the corresponding option in the dropdown box and click Extract. 
 
 ## Generic Text and its uses
 
@@ -43,6 +43,8 @@ Here's what you can get with it:
 * Pieces of text from other files
 
 In general, Generic Text can be pretty useful when you don't have a way to decompile the things yet.
+
+To get this data, use the top menu option File -> Open and choose the files you want to examine. Choose the Generic Text option in the dropdown box and click Extract.
 
 ## In case of Weapon Classes update
 
