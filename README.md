@@ -28,7 +28,7 @@ Usage
 
 To have translated output, use the top menu option Load -> Messages and choose the folder with the .lz files of the chosen language. If all goes well, the output will be translated. The output will also be written to the specified folder and its subfolders. (Example: choosing USEN/Message as the folder will get all the US English translated text)
 
-## Reading data - Heroes, Enemies, GC World, Skills, Quests, Tempest Trials, Weapon Classes and Forging Bonds -
+## Reading data - Heroes, Enemies, GC World, Skills, Quests, Tempest Trials, Weapon Classes and Forging Bonds
 
 To read all the above data, use the top menu option File -> Open and choose the files you want to examine in the folders suggested above. Choose the corresponding option in the dropdown box and click Extract. 
 
