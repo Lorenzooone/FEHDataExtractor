@@ -83,6 +83,7 @@
     <Compile Include="DSDecmp\Utils\IOUtils.cs" />
     <Compile Include="DSDecmp\Utils\LZUtil.cs" />
     <Compile Include="DSDecmp\Utils\SimpleReversePrioQueue.cs" />
+    <Compile Include="ForgingBonds.cs" />
     <Compile Include="Quests.cs" />
     <Compile Include="SecurityStuff.cs" />
     <Compile Include="ExtractionBase.cs" />

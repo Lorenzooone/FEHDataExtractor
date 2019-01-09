@@ -29,8 +29,14 @@ namespace FEHDataExtractor
                 case 0x13:
                 case 0x15:
                 case 0x19:
-                case 0x1B:
+                case 0x1A:
                     Thing = new SingleCountDependant();
+                    break;
+                case 0x1C:
+                    Thing = new Throne();
+                    break;
+                case 0x1B:
+                    Thing = new Aether_Stone();
                     break;
                 case 1:
                     Thing = new Hero();
@@ -56,7 +62,7 @@ namespace FEHDataExtractor
                     break;
                     
                 default:
-                    Thing = new Error();
+                    Thing = new Unknown();
                     break;
             }
             Thing.InsertIn(a, data);
@@ -72,7 +78,7 @@ namespace FEHDataExtractor
     {
         byte kind;
 
-        public static readonly String[] Thing = { "Orb", "Hero", "Hero Feather", "Stamina Potion", "Dueling Crest", "Light's Blessing", "Crystal", "", "", "", "", "", "Badge", "Battle Flag", "Sacred Seal", "Arena Assault Item", "Sacred Coin", "Refining Stone", "Divine Dew", "Arena Medal", "Blessing", "Conquest Lance", "Accessory", "Conversation", "", "Arena Crown", "", "Aether Stone" };
+        public static readonly String[] Thing = { "Orb", "Hero", "Hero Feather", "Stamina Potion", "Dueling Crest", "Light's Blessing", "Crystal", "", "", "", "", "", "Badge", "Battle Flag", "Sacred Seal", "Arena Assault Item", "Sacred Coin", "Refining Stone", "Divine Dew", "Arena Medal", "Blessing", "Conquest Lance", "Accessory", "Conversation", "", "Arena Crown", "Heroic Grail", "Aether Stone", "Throne" };
 
         public override void InsertIn(long a, byte[] data)
         {
@@ -105,17 +111,22 @@ namespace FEHDataExtractor
         public byte Length { get => length; set => length = value; }
         public string Rew { get => rew; set => rew = value; }
     }
-    public class Error : Reward_Type
+    public class Unknown : Reward_Type
     {
+        private short theoricalCount;
+
+        public short TheoricalCount { get => theoricalCount; set => theoricalCount = value; }
 
         public override void InsertIn(long a, byte[] data)
         {
+            base.InsertIn(a, data);
+            TheoricalCount = ExtractUtils.getShort(a + 1, data);
             Size = int.MaxValue;
         }
 
         public override string ToString()
         {
-            String text = "Error!";
+            String text = "Unknown reward! Kind = " + Kind.ToString("X") + "! Theorical count = " + theoricalCount.ToString();
             return text;
         }
         
@@ -159,7 +170,7 @@ namespace FEHDataExtractor
 
         public override string ToString()
         {
-            String text = Ranks[Support] + " " + Thing[Kind] + " with " + (Table.Contains("M" + Rew) ? Table["M" + Rew] : Rew);
+            String text = Ranks[Support] + " " + Thing[Kind] + " with " + getHeroName(Rew);
             return text;
         }
 
@@ -190,6 +201,29 @@ namespace FEHDataExtractor
         }
     }
 
+    public class Aether_Stone : SingleCountDependant
+    {
+        private byte length;
+        private string rew;
+
+        public byte Length { get => length; set => length = value; }
+        public string Rew { get => rew; set => rew = value; }
+
+        public override void InsertIn(long a, byte[] data)
+        {
+            base.InsertIn(a, data);
+            Length = data[a + 3];
+            Rew = ExtractUtils.GetStringSize(a + 4, data, Length);
+            Size += 1 + Length;
+        }
+
+        public override string ToString()
+        {
+            String text = Count + " " + Thing[Kind] + " " + (Table.Contains("M" + Rew) ? Table["M" + Rew] : Rew);
+            return text;
+        }
+    }
+
     public class Blessing : SingleCountDependant
     {
         private byte element;
@@ -205,7 +239,29 @@ namespace FEHDataExtractor
 
         public override string ToString()
         {
-            String text = Count + " " + LegendaryElement[Element] + " " + Thing[Kind];
+            String text = Count + " " + LegendaryElement[Element - 1] + " " + Thing[Kind];
+            text += Count > 1 ? "s" : "";
+            return text;
+        }
+    }
+
+    public class Throne : SingleCountDependant
+    {
+        private byte thronetype;
+        public static string[] Thrones = { "Gold", "Silver", "Bronze" };
+
+        public byte Thronetype { get => thronetype; set => thronetype = value; }
+
+        public override void InsertIn(long a, byte[] data)
+        {
+            base.InsertIn(a, data);
+            Thronetype = data[a + 3];
+            Size += 1;
+        }
+
+        public override string ToString()
+        {
+            String text = Count + " " + Thrones[Thronetype] + " " + Thing[Kind];
             text += Count > 1 ? "s" : "";
             return text;
         }
@@ -340,19 +396,21 @@ namespace FEHDataExtractor
                 Rewards[i].InsertIn(a + 1 + TotalSize, data);
                 if (Rewards[i].Thing.Size == int.MaxValue)
                 {
-                    Rewards = new SingleReward[1];
-                    Rewards[0] = new SingleReward();
-                    Rewards[0].InsertIn(a + 1 + TotalSize, data);
-                    return;
+                    TotalSize = int.MaxValue;
+                    i = Reward_Count;
                 }
-                TotalSize += Rewards[i].Thing.Size;
+                else
+                    TotalSize += Rewards[i].Thing.Size;
             }
-            Checksum = new byte[32];
-            for (int i = 0; i < 32; i++)
-                Checksum[i] = data[a + 1 + TotalSize + i];
-            string signatureHashHex = HACSHA256.HACSHA(ChecksumPrivateKey, data, a, 1 + TotalSize);
-            if(signatureHashHex.Equals(System.Text.Encoding.UTF8.GetString(Checksum)))
-                return;
+            if (TotalSize != int.MaxValue)
+            {
+                Checksum = new byte[32];
+                for (int i = 0; i < 32; i++)
+                    Checksum[i] = data[a + 1 + TotalSize + i];
+                string signatureHashHex = HACSHA256.HACSHA(ChecksumPrivateKey, data, a, 1 + TotalSize);
+                if (signatureHashHex.Equals(System.Text.Encoding.UTF8.GetString(Checksum)))
+                    return;
+            }
         }
 
         public override string ToString()
