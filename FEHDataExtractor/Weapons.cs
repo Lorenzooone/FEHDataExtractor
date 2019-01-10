@@ -16,8 +16,9 @@ namespace FEHDataExtractor
         private bool is_staff;
         private bool is_dagger;
         private bool is_breath;
+        private bool is_beast;
 
-        public SingleWeaponClass(string name, int index, string color, int range, bool magical, bool is_staff, bool is_dagger, bool is_breath)
+        public SingleWeaponClass(string name, int index, string color, int range, bool magical, bool is_staff, bool is_dagger, bool is_breath, bool is_beast)
         {
             Name = name;
             Index = index;
@@ -27,6 +28,7 @@ namespace FEHDataExtractor
             Is_staff = is_staff;
             Is_dagger = is_dagger;
             Is_breath = is_breath;
+            Is_beast = is_beast;
         }
 
         public override string ToString()
@@ -42,6 +44,7 @@ namespace FEHDataExtractor
         public bool Is_dagger { get => is_dagger; set => is_dagger = value; }
         public bool Is_breath { get => is_breath; set => is_breath = value; }
         public int Index { get => index; set => index = value; }
+        public bool Is_beast { get => is_beast; set => is_beast = value; }
     }
     class WeaponClass:CommonRelated
     {
@@ -59,6 +62,7 @@ namespace FEHDataExtractor
         ByteXor is_staff;
         ByteXor is_dagger;
         ByteXor is_breath;
+        ByteXor is_beast;
                                            // 4 bytes of padding
         public WeaponClass()
         {
@@ -75,6 +79,7 @@ namespace FEHDataExtractor
             Is_staff = new ByteXor(0x78);
             Is_dagger = new ByteXor(0xD7);
             Is_breath = new ByteXor(0x11);
+            Is_beast = new ByteXor(0xB0);
         }
 
         public WeaponClass(long a, byte[] data) : this()
@@ -94,6 +99,7 @@ namespace FEHDataExtractor
         public ByteXor Is_staff { get => is_staff; set => is_staff = value; }
         public ByteXor Is_dagger { get => is_dagger; set => is_dagger = value; }
         public ByteXor Is_breath { get => is_breath; set => is_breath = value; }
+        public ByteXor Is_beast { get => is_beast; set => is_beast = value; }
 
         public override void InsertIn(long a, byte[] data)
         {
@@ -116,6 +122,7 @@ namespace FEHDataExtractor
             Is_staff.XorValue(data[a + 41]);
             Is_dagger.XorValue(data[a + 42]);
             Is_breath.XorValue(data[a + 43]);
+            Is_beast.XorValue(data[a + 44]);
         }
         public override string ToString()
         {
@@ -138,6 +145,7 @@ namespace FEHDataExtractor
             text += Is_staff.Value == 1 ? "Is staff" + Environment.NewLine : "";
             text += Is_dagger.Value == 1 ? "Is dagger" + Environment.NewLine : "";
             text += Is_breath.Value == 1 ? "Is breath" + Environment.NewLine : "";
+            text += Is_beast.Value == 1 ? "Is beast" + Environment.NewLine : "";
             text += "--------------------------------------------" + Environment.NewLine;
             return text;
         }
@@ -181,7 +189,7 @@ namespace FEHDataExtractor
                     text = text.Remove(text.IndexOf("."));
                     text = text.Contains("bow") ? text.Replace("bow", "Bow") : text;
                 }
-                alpha[Things[i].Index.Value] = new SingleWeaponClass(text, (int)Things[i].Index.Value, Colors[Things[i].Color.Value], Things[i].Range.Value, Things[i].Res_damage.Value == 1, Things[i].Is_staff.Value == 1, Things[i].Is_dagger.Value == 1, Things[i].Is_breath.Value == 1);
+                alpha[Things[i].Index.Value] = new SingleWeaponClass(text, (int)Things[i].Index.Value, Colors[Things[i].Color.Value], Things[i].Range.Value, Things[i].Res_damage.Value == 1, Things[i].Is_staff.Value == 1, Things[i].Is_dagger.Value == 1, Things[i].Is_breath.Value == 1, Things[i].Is_beast.Value == 1);
                 Wp[Things[i].Index.Value] = alpha[Things[i].Index.Value].ToString();
             }
             WeaponNames = Wp;

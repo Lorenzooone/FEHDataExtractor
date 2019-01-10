@@ -24,29 +24,29 @@ namespace FEHDataExtractor
         public static void initializeWeapons()
         {
             SingleWeaponClass[] a = new SingleWeaponClass[23];
-            a[0] = new SingleWeaponClass("Sword", 0, "Red", 1, false, false, false, false);
-            a[1] = new SingleWeaponClass("Lance", 1, "Blue", 1, false, false, false, false);
-            a[2] = new SingleWeaponClass("Axe", 2, "Green", 1, false, false, false, false);
+            a[0] = new SingleWeaponClass("Sword", 0, "Red", 1, false, false, false, false, false);
+            a[1] = new SingleWeaponClass("Lance", 1, "Blue", 1, false, false, false, false, false);
+            a[2] = new SingleWeaponClass("Axe", 2, "Green", 1, false, false, false, false, false);
             for (int i = 0; i < 4; i++)
             {
-                a[i + 3] = new SingleWeaponClass((i != 3 ? ExtractionBase.Colours[i] + " " : "") + "Bow", 3 + i, ExtractionBase.Colours[i], 2, false, false, false, false);
+                a[i + 3] = new SingleWeaponClass((i != 3 ? ExtractionBase.Colours[i] + " " : "") + "Bow", 3 + i, ExtractionBase.Colours[i], 2, false, false, false, false, false);
             }
             for (int i = 0; i < 4; i++)
             {
-                a[i + 7] = new SingleWeaponClass((i != 3 ? ExtractionBase.Colours[i] + " " : "") + "Dagger", 7 + i, ExtractionBase.Colours[i], 2, false, false, true, false);
+                a[i + 7] = new SingleWeaponClass((i != 3 ? ExtractionBase.Colours[i] + " " : "") + "Dagger", 7 + i, ExtractionBase.Colours[i], 2, false, false, true, false, false);
             }
             for (int i = 0; i < 3; i++)
             {
-                a[i + 11] = new SingleWeaponClass(ExtractionBase.Colours[i] + " Tome", 11 + i, ExtractionBase.Colours[i], 2, true, false, false, false);
+                a[i + 11] = new SingleWeaponClass(ExtractionBase.Colours[i] + " Tome", 11 + i, ExtractionBase.Colours[i], 2, true, false, false, false, false);
             }
-            a[14] = new SingleWeaponClass("Staff", 14, "Colorless", 2, true, true, false, false);
+            a[14] = new SingleWeaponClass("Staff", 14, "Colorless", 2, true, true, false, false, false);
             for (int i = 0; i < 4; i++)
             {
-                a[i + 15] = new SingleWeaponClass(ExtractionBase.Colours[i] + " Breath", 15 + i, ExtractionBase.Colours[i], 1, true, false, false, true);
+                a[i + 15] = new SingleWeaponClass(ExtractionBase.Colours[i] + " Breath", 15 + i, ExtractionBase.Colours[i], 1, true, false, false, true, false);
             }
             for (int i = 0; i < 4; i++)
             {
-                a[i + 19] = new SingleWeaponClass(ExtractionBase.Colours[i] + " Beaststone", 19 + i, ExtractionBase.Colours[i], 1, false, false, false, false);
+                a[i + 19] = new SingleWeaponClass(ExtractionBase.Colours[i] + " Beast", 19 + i, ExtractionBase.Colours[i], 1, false, false, false, false, true);
             }
             ExtractionBase.WeaponsData = a;
         }

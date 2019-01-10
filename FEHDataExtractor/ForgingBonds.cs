@@ -84,7 +84,7 @@ namespace FEHDataExtractor
             NumberSize = new UInt32Xor(0x41, 0xA2, 0xA8, 0xEC);
             MultiplierSize = new UInt32Xor(0x91, 0x44, 0x97, 0x52);
             BonusAccessoriesNum = new UInt32Xor(0x34, 0x66, 0x23, 0x54);
-            PointsNum = new UInt32Xor(0x62, 0xF6, 0xA1, 0x7A);
+            PointsNum = new UInt32Xor(0xC2, 0xF6, 0xA1, 0x7A);
             DailiesNum = new UInt32Xor(0xF4, 0x9D, 0x5F, 0xDD);
         }
 
@@ -129,9 +129,9 @@ namespace FEHDataExtractor
             {
                 BonusAccessories[i] = new StringXor(ExtractUtils.getLong(position + (i * 8), data) + offset, data, FB);
             }
-            Points = new PointReward[PointsNum.Value];
+            Points = new PointReward[PointsNum.Value * CharacterSize.Value];
             position = ExtractUtils.getLong(a + 104, data) + offset;
-            for (int i = 0; i < PointsNum.Value; i++)
+            for (int i = 0; i < PointsNum.Value * CharacterSize.Value; i++)
             {
                 Points[i] = new PointReward();
                 Points[i].InsertIn(position + (i * Points[i].Size), data);

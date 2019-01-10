@@ -49,14 +49,14 @@ public abstract class ExtractionBase
 {
     public static readonly int offset = 0x20;
     private static Hashtable table = new Hashtable();
-    public static String[] WeaponNames = { "Sword", "Lance", "Axe", "Red Bow", "Blue Bow", "Green Bow", "Bow", "Red Dagger", "Blue Dagger", "Green Dagger", "Dagger", "Red Tome", "Blue Tome", "Green Tome", "Staff", "Red Breath", "Blue Breath", "Green Breath", "Colorless Breath", "Red Beaststone", "Blue Beaststone", "Green Beaststone", "Colorless Beaststone" };
+    public static String[] WeaponNames = { "Sword", "Lance", "Axe", "Red Bow", "Blue Bow", "Green Bow", "Bow", "Red Dagger", "Blue Dagger", "Green Dagger", "Dagger", "Red Tome", "Blue Tome", "Green Tome", "Staff", "Red Breath", "Blue Breath", "Green Breath", "Colorless Breath", "Red Beast", "Blue Beast", "Green Beast", "Colorless Beast" };
     public static SingleWeaponClass[] WeaponsData;
     public static readonly String[] Tome_Elem = { "None", "Fire", "Thunder", "Wind", "Light", "Dark" };
     public static readonly String[] Movement = { "Infantry", "Armored", "Cavalry", "Flying" };
     public static readonly String[] Series = { "Heroes", "Shadow Dragon and the Blade of Light / Mystery of the Emblem / Shadow Dragon / New Mystery of the Emblem", "Gaiden / Echoes", "Genealogy of the Holy War", "Thracia 776", "The Binding Blade", "The Blazing Blade", "The Sacred Stones", "Path of Radiance", "Radiant Dawn", "Awakening", "Fates" };
     public static readonly String[] BadgeColor = { "Scarlet", "Azure", "Verdant", "Trasparent" };
     public static readonly String[] ShardColor = { "Universal", "Scarlet", "Azure", "Verdant", "Trasparent" };
-    public static readonly String[] SkillCategory = { "Weapon", "Assist", "Special", "Passive A", "Passive B", "Passive C", "Sacred Seal", "Refined Weapon Skill Effect" };
+    public static readonly String[] SkillCategory = { "Weapon", "Assist", "Special", "Passive A", "Passive B", "Passive C", "Sacred Seal", "Refined Weapon Skill Effect", "Beast Effect" };
     public static readonly String[] Ranks = { "C", "B", "A", "S" };
     public static readonly String[] LegendaryElement = { "Fire", "Water", "Wind", "Earth", "Light", "Dark", "Astra", "Anima" };
     public static readonly String[] Colours = { "Red", "Blue", "Green", "Colorless" };
@@ -775,6 +775,7 @@ public class SingleSkill : CommonRelated
     StringXor name_id;
     StringXor desc_id;
     StringXor refine_id;
+    StringXor beast_effect_id;
     StringXor[] prerequisites; //2 Elements!
     StringXor next_skill;
     StringXor[] sprites; //No Xor! 4 Elements!
@@ -839,7 +840,7 @@ public class SingleSkill : CommonRelated
     {
         Name = "Skills";
         ElemXor = new byte[] { 0xAD, 0xE9, 0xDE, 0x4A, 0x07, 0xC7, 0xEC, 0x7F };
-        Size = 320;
+        Size = 328;
         Prerequisites = new StringXor[2];
         Sprites = new StringXor[4];
         Num_id = new UInt32Xor(0x23, 0x3A, 0xA5, 0xC6);
@@ -917,6 +918,8 @@ public class SingleSkill : CommonRelated
         Refine_id = new StringXor(ExtractUtils.getLong(a + 8, data) + offset, data, Common);
         if (!Refine_id.Value.Equals(""))
             Archive.Index++;
+        a += 8;
+        Beast_effect_id = new StringXor(ExtractUtils.getLong(a + 8, data) + offset, data, Common);
         for (int i = 0; i < Prerequisites.Length; i++)
         {
             Prerequisites[i] = new StringXor(ExtractUtils.getLong(a + 16 + (8 * i), data) + offset, data, Common);
@@ -1011,6 +1014,8 @@ public class SingleSkill : CommonRelated
         text += "Description Identifier: " + Desc_id + Environment.NewLine;
         if (!Refine_id.Value.Equals(""))
             text += getStuff(Refine_id, "Refine: ") + "Refine ID: " + Refine_id + Environment.NewLine;
+        if (!Beast_effect_id.Value.Equals(""))
+            text += getStuff(Beast_effect_id, "Beast Effect: ") + "Beast Effect ID: " + Beast_effect_id + Environment.NewLine;
         for (int i = 0; i < Prerequisites.Length; i++)
         {
             if(!Prerequisites[i].Value.Equals(""))
@@ -1037,6 +1042,7 @@ public class SingleSkill : CommonRelated
         bool is_Staff = false;
         bool is_Breath = false;
         bool is_Dagger = false;
+        bool is_Beast = false;
         String tmp2 = "";
         for (int i = 0; i < WeaponNames.Length; i++)
         {
@@ -1054,6 +1060,8 @@ public class SingleSkill : CommonRelated
                         is_Staff = true;
                     if (WeaponsData[i].Is_dagger)
                         is_Dagger = true;
+                    if (WeaponsData[i].Is_beast)
+                        is_Beast = true;
                 } 
                 start = false;
             }
@@ -1087,15 +1095,41 @@ public class SingleSkill : CommonRelated
             }
             if (Class_params.Def.Value > 0)
             {
-                text += temp + "-" + Class_params.Atk + " Defense";
+                text += temp + "-" + Class_params.Def + " Defense";
                 temp = ",";
             }
             if (Class_params.Res.Value > 0)
             {
-                text += temp + "-" + Class_params.Atk + " Resistance";
+                text += temp + "-" + Class_params.Res + " Resistance";
                 temp = ",";
             }
             text += "on foes within " + Class_params.Hp + " spaces of target through their next action" + Environment.NewLine;
+        }
+        else if (is_Beast && (Class_params.Hp.Value == 1))
+        {
+            text += "When transformed, grants: ";
+            String temp = "";
+            if (Class_params.Atk.Value > 0)
+            {
+                text += Class_params.Atk + " Attack";
+                temp = ",";
+            }
+            if (Class_params.Spd.Value > 0)
+            {
+                text += temp + Class_params.Spd + " Speed";
+                temp = ",";
+            }
+            if (Class_params.Def.Value > 0)
+            {
+                text += temp + Class_params.Def + " Defense";
+                temp = ",";
+            }
+            if (Class_params.Res.Value > 0)
+            {
+                text += temp + Class_params.Res + " Resistance";
+                temp = ",";
+            }
+            text += Environment.NewLine;
         }
         else
             text += "Class dependant Parameters: " + Class_params;
@@ -1229,6 +1263,7 @@ public class SingleSkill : CommonRelated
     public UInt16Xor Ss_badge_type { get => ss_badge_type; set => ss_badge_type = value; }
     public UInt16Xor Ss_badge { get => ss_badge; set => ss_badge = value; }
     public UInt16Xor Ss_great_badge { get => ss_great_badge; set => ss_great_badge = value; }
+    public StringXor Beast_effect_id { get => beast_effect_id; set => beast_effect_id = value; }
 }
 
 public class GenericText : ExtractionBase
@@ -1354,6 +1389,7 @@ public class BaseExtractArchive<T> : ExtractionBase where T : ExtractionBase, ne
             Things[i] = new T();
             Things[i].InsertIn(Archive, a + (Things[i].Size * i), data);
         }
+        Archive.Index = Archive.Ptr_list_length;
     }
 
     public override string ToString()

@@ -35,8 +35,9 @@ namespace FEHDataExtractor
                 case 0x1C:
                     Thing = new Throne();
                     break;
+                case 0x1D:
                 case 0x1B:
-                    Thing = new Aether_Stone();
+                    Thing = new CountStr();
                     break;
                 case 1:
                     Thing = new Hero();
@@ -78,7 +79,7 @@ namespace FEHDataExtractor
     {
         byte kind;
 
-        public static readonly String[] Thing = { "Orb", "Hero", "Hero Feather", "Stamina Potion", "Dueling Crest", "Light's Blessing", "Crystal", "", "", "", "", "", "Badge", "Battle Flag", "Sacred Seal", "Arena Assault Item", "Sacred Coin", "Refining Stone", "Divine Dew", "Arena Medal", "Blessing", "Conquest Lance", "Accessory", "Conversation", "", "Arena Crown", "Heroic Grail", "Aether Stone", "Throne" };
+        public static readonly String[] Thing = { "Orb", "Hero", "Hero Feather", "Stamina Potion", "Dueling Crest", "Light's Blessing", "Crystal", "", "", "", "", "", "Badge", "Battle Flag", "Sacred Seal", "Arena Assault Item", "Sacred Coin", "Refining Stone", "Divine Dew", "Arena Medal", "Blessing", "Conquest Lance", "Accessory", "Conversation", "", "Arena Crown", "Heroic Grail", "Aether Stone", "Throne", "Summoning Ticket" };
 
         public override void InsertIn(long a, byte[] data)
         {
@@ -201,7 +202,7 @@ namespace FEHDataExtractor
         }
     }
 
-    public class Aether_Stone : SingleCountDependant
+    public class CountStr : SingleCountDependant
     {
         private byte length;
         private string rew;
