@@ -343,16 +343,16 @@ namespace FEHDataExtractor
 
     public class DailyReward : FBRelated
     {
-        private UInt64Xor start;
-        private UInt64Xor finish;
+        private Int64Xor start;
+        private Int64Xor finish;
         private UInt32Xor rewardSize;  //Xor: 0x93, 0x65, 0x23, 0x68
         private UInt32Xor index; //Xor: 0x7C, 0x47, 0xF0, 0xA3
         private Reward_Payload reward;
         private StringXor id_tag;
         private StringXor id_tag2;
 
-        public UInt64Xor Start { get => start; set => start = value; }
-        public UInt64Xor Finish { get => finish; set => finish = value; }
+        public Int64Xor Start { get => start; set => start = value; }
+        public Int64Xor Finish { get => finish; set => finish = value; }
         public UInt32Xor Index { get => index; set => index = value; }
         public Reward_Payload Reward { get => reward; set => reward = value; }
         public StringXor Id_tag { get => id_tag; set => id_tag = value; }
@@ -362,8 +362,8 @@ namespace FEHDataExtractor
         public DailyReward()
         {
             Size = 48;
-            Start = new UInt64Xor(0x63, 0xFE, 0xA6, 0xB1, 0x77, 0x37, 0x85, 0x35);
-            Finish = new UInt64Xor(0x1F, 0x91, 0xA5, 0x1B, 0xC4, 0xC5, 0x6E, 0x5A);
+            Start = new Int64Xor(0x93, 0xC2, 0x58, 0xEA, 0x77, 0x37, 0x85, 0x35);
+            Finish = new Int64Xor(0xEF, 0x20, 0xB5, 0x47, 0xC4, 0xC5, 0x6E, 0x5A);
             RewardSize = new UInt32Xor(0x93, 0x65, 0x23, 0x68);
             Index = new UInt32Xor(0x7C, 0x47, 0xF0, 0xA3);
         }
@@ -383,8 +383,8 @@ namespace FEHDataExtractor
         public override string ToString()
         {
             string text = "ID: " + (!Id_tag.Value.Equals("") ? Id_tag.Value : Id_tag2.Value) + Environment.NewLine;
-            text += "Start: " + (Start.Value < 0 ? "Not available" : DateTimeOffset.FromUnixTimeSeconds((long)Start.Value).DateTime.ToLocalTime().ToString()) + Environment.NewLine;
-            text += "Finish: " + (Finish.Value < 0 ? "Not available" : DateTimeOffset.FromUnixTimeSeconds((long)Finish.Value).DateTime.ToLocalTime().ToString()) + Environment.NewLine;
+            text += "Start: " + (Start.Value <= 0 ? "Not available" : DateTimeOffset.FromUnixTimeSeconds((long)Start.Value).DateTime.ToLocalTime().ToString()) + Environment.NewLine;
+            text += "Finish: " + (Finish.Value <= 0 ? "Not available" : DateTimeOffset.FromUnixTimeSeconds((long)Finish.Value).DateTime.ToLocalTime().ToString()) + Environment.NewLine;
             text += "Number: " + Index + Environment.NewLine;
             text += Reward + "-------------------------------------" + Environment.NewLine;
             return text;
