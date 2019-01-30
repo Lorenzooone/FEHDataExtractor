@@ -342,7 +342,7 @@ public class Legendary : ExtractionBase
     override public String ToString()
     {
         String text = "Bonus Stats: " + Bonuses;
-        text += "Element: " + LegendaryElement[Element.Value] + Environment.NewLine;
+        text += "Element: " + LegendaryElement[Element.Value - 1] + Environment.NewLine;
 
         return text;
     }
