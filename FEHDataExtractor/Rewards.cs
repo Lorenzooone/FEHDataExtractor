@@ -264,7 +264,7 @@ namespace FEHDataExtractor
 
         public override string ToString()
         {
-            String text = Count + " " + Movement[Type - 1] + " " + Thing[Kind];
+            String text = Count + " " + Movement[Type] + " " + Thing[Kind];
             text += Count > 1 ? "s" : "";
             return text;
         }
