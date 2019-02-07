@@ -61,7 +61,10 @@ namespace FEHDataExtractor
                 case 0x17:
                     Thing = new Conversation();
                     break;
-                    
+                case 0x1E:
+                    Thing = new Dragonflower();
+                    break;
+
                 default:
                     Thing = new Unknown();
                     break;
@@ -79,7 +82,7 @@ namespace FEHDataExtractor
     {
         byte kind;
 
-        public static readonly String[] Thing = { "Orb", "Hero", "Hero Feather", "Stamina Potion", "Dueling Crest", "Light's Blessing", "Crystal", "", "", "", "", "", "Badge", "Battle Flag", "Sacred Seal", "Arena Assault Item", "Sacred Coin", "Refining Stone", "Divine Dew", "Arena Medal", "Blessing", "Conquest Lance", "Accessory", "Conversation", "", "Arena Crown", "Heroic Grail", "Aether Stone", "Throne", "Summoning Ticket" };
+        public static readonly String[] Thing = { "Orb", "Hero", "Hero Feather", "Stamina Potion", "Dueling Crest", "Light's Blessing", "Crystal", "", "", "", "", "", "Badge", "Battle Flag", "Sacred Seal", "Arena Assault Item", "Sacred Coin", "Refining Stone", "Divine Dew", "Arena Medal", "Blessing", "Conquest Lance", "Accessory", "Conversation", "", "Arena Crown", "Heroic Grail", "Aether Stone", "Throne", "Summoning Ticket", "Dragonflower" };
 
         public override void InsertIn(long a, byte[] data)
         {
@@ -241,6 +244,27 @@ namespace FEHDataExtractor
         public override string ToString()
         {
             String text = Count + " " + LegendaryElement[Element - 1] + " " + Thing[Kind];
+            text += Count > 1 ? "s" : "";
+            return text;
+        }
+    }
+
+    public class Dragonflower : SingleCountDependant
+    {
+        private byte type;
+
+        public byte Type { get => type; set => type = value; }
+
+        public override void InsertIn(long a, byte[] data)
+        {
+            base.InsertIn(a, data);
+            Type = data[a + 3];
+            Size += 1;
+        }
+
+        public override string ToString()
+        {
+            String text = Count + " " + Movement[Type - 1] + " " + Thing[Kind];
             text += Count > 1 ? "s" : "";
             return text;
         }

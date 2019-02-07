@@ -485,16 +485,17 @@ public class SinglePerson : CharacterRelated
     ByteXor permanent_hero;
     ByteXor base_vector_id;
     ByteXor refresher;
+    ByteXor dragonflowers;
     ByteXor _unknown2;
-    // 7 bytes of padding
-    Stats max_stats;
+    // 6 bytes of padding
+//    Stats max_stats;
     StringXor[,] skills;
 
     public SinglePerson():base()
     {
         Name = "Heroes";
         ElemXor = new byte[] { 0xE1, 0xB9, 0x3A, 0x3C, 0x79, 0xAB, 0x51, 0xDE };
-        Size += 41 + (5 * 8 * PrintSkills.Length);
+        Size += 25 + (5 * 8 * PrintSkills.Length);
         Id_num = new UInt32Xor(0x18, 0x4E, 0x6E, 0x5F);
         Sort_value = new UInt32Xor(0x9B, 0x34, 0x80, 0x2A);
         Weapon_type = new ByteXor(6);
@@ -505,6 +506,7 @@ public class SinglePerson : CharacterRelated
         Permanent_hero = new ByteXor(0xC7);
         Base_vector_id = new ByteXor(0x3D);
         Refresher = new ByteXor(0xFF);
+        Dragonflowers = new ByteXor(0xE4);
         Unknown2 = new ByteXor(0);
         Skills = new StringXor[5, PrintSkills.Length];
     }
@@ -542,15 +544,16 @@ public class SinglePerson : CharacterRelated
         Permanent_hero.XorValue(data[a + 37]);
         Base_vector_id.XorValue(data[a + 38]);
         Refresher.XorValue(data[a + 39]);
-        Unknown2.XorValue(data[a + 40]);
+        Dragonflowers.XorValue(data[a + 40]);
+        Unknown2.XorValue(data[a + 41]);
         Base_stats = new Stats(a + 48, data);
         Base_stats.IncrementAll();
         Growth_rates = new Stats(a + 64, data);
-        Max_stats = new Stats(a + 80, data);
+//        Max_stats = new Stats(a + 80, data);
         for (int i = 0; i < Skills.Length / PrintSkills.Length; i++)
             for (int j = 0; j < PrintSkills.Length; j++)
             {
-                Skills[i, j] = new StringXor(ExtractUtils.getLong((j * 8) + (i * PrintSkills.Length * 8) + a + 96, data) + offset, data, Common);
+                Skills[i, j] = new StringXor(ExtractUtils.getLong((j * 8) + (i * PrintSkills.Length * 8) + a + 80, data) + offset, data, Common);
                 if (!Skills[i, j].ToString().Equals(""))
                 {
                     Archive.Index++;
@@ -584,6 +587,7 @@ public class SinglePerson : CharacterRelated
         text += Permanent_hero.Value == 0 ? "Can be sent home and merged" + Environment.NewLine : "Cannot be sent home or merged" + Environment.NewLine;
         text += "BVID: " + Base_vector_id + Environment.NewLine;
         text += Refresher.Value == 0 ? "Cannot learn Sing/Dance" + Environment.NewLine : "Can learn Sing/Dance" + Environment.NewLine;
+        text += Dragonflowers.Value == 0 ? "Cannot use Dragonflowers" + Environment.NewLine : "Maximum Dragonflowers: " + Dragonflowers.Value + Environment.NewLine;
         text += "5 Stars Level 1 Stats: " + Base_stats;
         Stats tmp = new Stats(Base_stats, Growth_rates);
         text += "5 Stars Level 40 Stats: " + tmp;
@@ -591,7 +595,7 @@ public class SinglePerson : CharacterRelated
         text += "BST: " + (tmp.Hp.Value + tmp.Atk.Value + tmp.Spd.Value + tmp.Def.Value + tmp.Res.Value) + Environment.NewLine;
         text += SuperBoonBane(Base_stats, Growth_rates, tmp);
         text += "Growth Rates Total: " + (Growth_rates.Hp.Value + Growth_rates.Atk.Value + Growth_rates.Spd.Value + Growth_rates.Def.Value + Growth_rates.Res.Value) + Environment.NewLine;
-        text += "Enemy Stats: " + Max_stats;
+//        text += "Enemy Stats: " + Max_stats;
         for (int i = 0; i < Skills.Length / PrintSkills.Length; i++)
         {
             text += (i + 1) + " Star";
@@ -614,9 +618,9 @@ public class SinglePerson : CharacterRelated
     public ByteXor Base_vector_id { get => base_vector_id; set => base_vector_id = value; }
     public ByteXor Refresher { get => refresher; set => refresher = value; }
     public ByteXor Unknown2 { get => _unknown2; set => _unknown2 = value; }
-    public Stats Max_stats { get => max_stats; set => max_stats = value; }
+//    public Stats Max_stats { get => max_stats; set => max_stats = value; }
     public StringXor[,] Skills { get => skills; set => skills = value; }
-
+    public ByteXor Dragonflowers { get => dragonflowers; set => dragonflowers = value; }
 }
 
 public class GCArea:GCRelated
@@ -828,19 +832,19 @@ public class SingleSkill : CommonRelated
     ByteXor _unknown2;
     ByteXor _unknown3;
                                        // 3 bytes of padding
-    StringXor id_tag2;
-    StringXor next_seal;
-    StringXor prev_seal;
-    UInt16Xor ss_coin;
-    UInt16Xor ss_badge_type;
-    UInt16Xor ss_badge;
-    UInt16Xor ss_great_badge;
+//    StringXor id_tag2;
+//    StringXor next_seal;
+//    StringXor prev_seal;
+//    UInt16Xor ss_coin;
+//    UInt16Xor ss_badge_type;
+//    UInt16Xor ss_badge;
+//    UInt16Xor ss_great_badge;
 
     public SingleSkill()
     {
         Name = "Skills";
         ElemXor = new byte[] { 0xAD, 0xE9, 0xDE, 0x4A, 0x07, 0xC7, 0xEC, 0x7F };
-        Size = 328;
+        Size = 296;
         Prerequisites = new StringXor[2];
         Sprites = new StringXor[4];
         Num_id = new UInt32Xor(0x23, 0x3A, 0xA5, 0xC6);
@@ -890,10 +894,11 @@ public class SingleSkill : CommonRelated
         Max_lv = new ByteXor(0x24);
         Unknown2 = new ByteXor(0x19);
         Unknown3 = new ByteXor(0xBD);
-        Ss_coin = new UInt16Xor(0x40, 0xC5);
+/*        Ss_coin = new UInt16Xor(0x40, 0xC5);
         Ss_badge_type = new UInt16Xor(0x0F, 0xD5);
         Ss_badge = new UInt16Xor(0xEC, 0x8C);
         Ss_great_badge = new UInt16Xor(0xFF, 0xCC);
+        */
 
     }
 
@@ -987,7 +992,7 @@ public class SingleSkill : CommonRelated
         Max_lv.XorValue(data[a + 250]);
         Unknown2.XorValue(data[a + 251]);
         Unknown3.XorValue(data[a + 252]);
-        Id_tag2 = new StringXor(ExtractUtils.getLong(a + 256, data) + offset, data, Common);
+/*        Id_tag2 = new StringXor(ExtractUtils.getLong(a + 256, data) + offset, data, Common);
         if (!Id_tag2.Value.Equals(""))
             Archive.Index++;
         Next_seal = new StringXor(ExtractUtils.getLong(a + 264, data) + offset, data, Common);
@@ -1000,6 +1005,7 @@ public class SingleSkill : CommonRelated
         Ss_badge_type.XorValue((ExtractUtils.getShort(a + 282, data)));
         Ss_badge.XorValue((ExtractUtils.getShort(a + 284, data)));
         Ss_great_badge.XorValue((ExtractUtils.getShort(a + 286, data)));
+        */
     }
 
     public override string ToString()
@@ -1186,7 +1192,7 @@ public class SingleSkill : CommonRelated
         text += Timestamp.Value < 0 ? "Not available" + Environment.NewLine : DateTimeOffset.FromUnixTimeSeconds(Timestamp.Value).DateTime.ToLocalTime() + Environment.NewLine;
         text += Min_lv.Value == 0 ? "" : "Minimum Enemy Level: " + Min_lv + Environment.NewLine;
         text += Max_lv.Value == 0 ? "" : "Maximum Enemy Level: " + Max_lv + Environment.NewLine;
-        if (!Next_seal.Value.Equals(""))
+/*        if (!Next_seal.Value.Equals(""))
             text += getStuff(Next_seal, "Next Seal: ") + "Next Seal ID: " + Next_seal + Environment.NewLine;
         if (!Prev_seal.Value.Equals(""))
             text += getStuff(Prev_seal, "Previous Seal: ") + "Previous Seal ID: " + Prev_seal + Environment.NewLine;
@@ -1194,7 +1200,7 @@ public class SingleSkill : CommonRelated
         text += Ss_coin.Value == 0 ? "" : "Sacred Seal required Badge type: " + BadgeColor[Ss_badge_type.Value] + Environment.NewLine;
         text += Ss_coin.Value == 0 ? "" : "Sacred Seal required Badges: " + Ss_badge + Environment.NewLine;
         text += Ss_coin.Value == 0 ? "" : "Sacred Seal required Great Badges: " + Ss_great_badge + Environment.NewLine;
-        
+*/       
         text += "-----------------------------------------------------------------------------------------------" + Environment.NewLine;
 
         return text;
@@ -1256,13 +1262,13 @@ public class SingleSkill : CommonRelated
     public ByteXor Max_lv { get => max_lv; set => max_lv = value; }
     public ByteXor Unknown2 { get => _unknown2; set => _unknown2 = value; }
     public ByteXor Unknown3 { get => _unknown3; set => _unknown3 = value; }
-    public StringXor Id_tag2 { get => id_tag2; set => id_tag2 = value; }
-    public StringXor Next_seal { get => next_seal; set => next_seal = value; }
-    public StringXor Prev_seal { get => prev_seal; set => prev_seal = value; }
-    public UInt16Xor Ss_coin { get => ss_coin; set => ss_coin = value; }
-    public UInt16Xor Ss_badge_type { get => ss_badge_type; set => ss_badge_type = value; }
-    public UInt16Xor Ss_badge { get => ss_badge; set => ss_badge = value; }
-    public UInt16Xor Ss_great_badge { get => ss_great_badge; set => ss_great_badge = value; }
+//    public StringXor Id_tag2 { get => id_tag2; set => id_tag2 = value; }
+//    public StringXor Next_seal { get => next_seal; set => next_seal = value; }
+//    public StringXor Prev_seal { get => prev_seal; set => prev_seal = value; }
+//    public UInt16Xor Ss_coin { get => ss_coin; set => ss_coin = value; }
+//    public UInt16Xor Ss_badge_type { get => ss_badge_type; set => ss_badge_type = value; }
+//    public UInt16Xor Ss_badge { get => ss_badge; set => ss_badge = value; }
+//    public UInt16Xor Ss_great_badge { get => ss_great_badge; set => ss_great_badge = value; }
     public StringXor Beast_effect_id { get => beast_effect_id; set => beast_effect_id = value; }
 }
 
