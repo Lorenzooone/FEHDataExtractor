@@ -34,12 +34,15 @@
             this.closeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.loadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.messagesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.Extract = new System.Windows.Forms.Button();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
-            this.loadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.messagesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
+            this.kageroChartToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.assetsFolderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.kageroChartsDataFolderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -48,7 +51,8 @@
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
             this.helpToolStripMenuItem,
-            this.loadToolStripMenuItem});
+            this.loadToolStripMenuItem,
+            this.kageroChartToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(309, 24);
@@ -68,14 +72,14 @@
             // openToolStripMenuItem
             // 
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
             this.openToolStripMenuItem.Text = "Open";
             this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
             // 
             // closeToolStripMenuItem
             // 
             this.closeToolStripMenuItem.Name = "closeToolStripMenuItem";
-            this.closeToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.closeToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
             this.closeToolStripMenuItem.Text = "Close";
             this.closeToolStripMenuItem.Click += new System.EventHandler(this.closeToolStripMenuItem_Click);
             // 
@@ -94,6 +98,21 @@
             this.aboutToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
             this.aboutToolStripMenuItem.Text = "About";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
+            // 
+            // loadToolStripMenuItem
+            // 
+            this.loadToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.messagesToolStripMenuItem});
+            this.loadToolStripMenuItem.Name = "loadToolStripMenuItem";
+            this.loadToolStripMenuItem.Size = new System.Drawing.Size(45, 20);
+            this.loadToolStripMenuItem.Text = "Load";
+            // 
+            // messagesToolStripMenuItem
+            // 
+            this.messagesToolStripMenuItem.Name = "messagesToolStripMenuItem";
+            this.messagesToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
+            this.messagesToolStripMenuItem.Text = "Messages";
+            this.messagesToolStripMenuItem.Click += new System.EventHandler(this.messagesToolStripMenuItem_Click);
             // 
             // Extract
             // 
@@ -123,20 +142,28 @@
             this.openFileDialog1.Title = "File Selector";
             this.openFileDialog1.FileOk += new System.ComponentModel.CancelEventHandler(this.openFileDialog1_FileOk);
             // 
-            // loadToolStripMenuItem
+            // kageroChartToolStripMenuItem
             // 
-            this.loadToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.messagesToolStripMenuItem});
-            this.loadToolStripMenuItem.Name = "loadToolStripMenuItem";
-            this.loadToolStripMenuItem.Size = new System.Drawing.Size(45, 20);
-            this.loadToolStripMenuItem.Text = "Load";
+            this.kageroChartToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.assetsFolderToolStripMenuItem,
+            this.kageroChartsDataFolderToolStripMenuItem});
+            this.kageroChartToolStripMenuItem.Name = "kageroChartToolStripMenuItem";
+            this.kageroChartToolStripMenuItem.Size = new System.Drawing.Size(85, 20);
+            this.kageroChartToolStripMenuItem.Text = "KageroChart";
             // 
-            // messagesToolStripMenuItem
+            // assetsFolderToolStripMenuItem
             // 
-            this.messagesToolStripMenuItem.Name = "messagesToolStripMenuItem";
-            this.messagesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.messagesToolStripMenuItem.Text = "Messages";
-            this.messagesToolStripMenuItem.Click += new System.EventHandler(this.messagesToolStripMenuItem_Click);
+            this.assetsFolderToolStripMenuItem.Name = "assetsFolderToolStripMenuItem";
+            this.assetsFolderToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
+            this.assetsFolderToolStripMenuItem.Text = "Assets folder";
+            this.assetsFolderToolStripMenuItem.Click += new System.EventHandler(this.assetsFolderToolStripMenuItem_Click);
+            // 
+            // kageroChartsDataFolderToolStripMenuItem
+            // 
+            this.kageroChartsDataFolderToolStripMenuItem.Name = "kageroChartsDataFolderToolStripMenuItem";
+            this.kageroChartsDataFolderToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
+            this.kageroChartsDataFolderToolStripMenuItem.Text = "KageroChart\'s Folder";
+            this.kageroChartsDataFolderToolStripMenuItem.Click += new System.EventHandler(this.kageroChartsDataFolderToolStripMenuItem_Click);
             // 
             // Form1
             // 
@@ -171,6 +198,9 @@
         private System.Windows.Forms.ToolStripMenuItem loadToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem messagesToolStripMenuItem;
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog1;
+        private System.Windows.Forms.ToolStripMenuItem kageroChartToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem assetsFolderToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem kageroChartsDataFolderToolStripMenuItem;
     }
 }
 

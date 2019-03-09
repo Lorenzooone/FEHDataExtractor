@@ -127,16 +127,26 @@ public abstract class CharacterRelated: CommonRelated
     ByteXor move_type;
     Stats base_stats;
     Stats growth_rates;
+    private string heroName;
+    private string epithet;
+    private string description;
+    private string voice;
+    private string illust;
 
     public string getCharacterStuff()
     {
         string text = "";
         if (Table.Contains("M" + Id_tag.ToString()))
         {
+            HeroName = Table["M" + Id_tag.ToString()] + "";
             text += "Name: " + Table["M" + Id_tag.ToString()] + Environment.NewLine;
+            Epithet = Table.Contains("M" + Id_tag.Value.Insert(3, "_HONOR")) ? Table["M" + Id_tag.Value.Insert(3, "_HONOR")] + "" : "";
             text += Table.Contains("M" + Id_tag.Value.Insert(3, "_HONOR")) ? "Epithet: " + Table["M" + Id_tag.Value.Insert(3, "_HONOR")] + Environment.NewLine : "";
+            Description = Table.Contains("M" + Id_tag.Value.Insert(3, "_H")) ? Table["M" + Id_tag.Value.Insert(3, "_H")].ToString().Replace("\\n", " ").Replace("\\r", " ") + "" : "";
             text += Table.Contains("M" + Id_tag.Value.Insert(3, "_H")) ? "Description: " + Table["M" + Id_tag.Value.Insert(3, "_H")].ToString().Replace("\\n", " ").Replace("\\r", " ") + Environment.NewLine : "";
+            Voice = Table.Contains("M" + Id_tag.Value.Insert(3, "_VOICE")) ? Table["M" + Id_tag.Value.Insert(3, "_VOICE")] + "" : "";
             text += Table.Contains("M" + Id_tag.Value.Insert(3, "_VOICE")) ? "Voice Actor: " + Table["M" + Id_tag.Value.Insert(3, "_VOICE")] + Environment.NewLine : "";
+            Illust = Table.Contains("M" + Id_tag.Value.Insert(3, "_ILLUST")) ? Table["M" + Id_tag.Value.Insert(3, "_ILLUST")] + "" : "";
             text += Table.Contains("M" + Id_tag.Value.Insert(3, "_ILLUST")) ? "Illustrator: " + Table["M" + Id_tag.Value.Insert(3, "_ILLUST")] + Environment.NewLine : "";
         }
         return text;
@@ -250,6 +260,11 @@ public abstract class CharacterRelated: CommonRelated
     public ByteXor Move_type { get => move_type; set => move_type = value; }
     public Stats Base_stats { get => base_stats; set => base_stats = value; }
     public Stats Growth_rates { get => growth_rates; set => growth_rates = value; }
+    public string HeroName { get => heroName; set => heroName = value; }
+    public string Epithet { get => epithet; set => epithet = value; }
+    public string Description { get => description; set => description = value; }
+    public string Voice { get => voice; set => voice = value; }
+    public string Illust { get => illust; set => illust = value; }
 }
 
 public class Stats : ExtractionBase

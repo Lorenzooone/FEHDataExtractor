@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Newtonsoft.Json.Linq;
 
 public abstract class Xor
 {
@@ -191,6 +192,199 @@ public class LoadMessages
     }
 }
 
+public class LoadHeroes
+{
+    private static BaseExtractArchive<SinglePerson> tmp = new BaseExtractArchive<SinglePerson>();
+    public static readonly int offset = 0x20;
+
+    public static String convStr(String str)
+    {
+        str = str.ToLower();
+        str = str.Replace("\'", "");
+        str = str.Replace(" ", "-");
+        str = str.Replace("à", "a");
+        str = str.Replace("á", "a");
+        str = str.Replace("é", "e");
+        str = str.Replace("è", "e");
+        str = str.Replace("ì", "i");
+        str = str.Replace("í", "i");
+        str = str.Replace("ò", "o");
+        str = str.Replace("ó", "o");
+        str = str.Replace("ö", "o");
+        str = str.Replace("ù", "u");
+        str = str.Replace("ú", "u");
+        str = str.Replace("ý", "y");
+        str = str.Replace("+", "-plus-");
+        str = str.Replace(",", "");
+        str = str.Replace("ð", "");
+        str = str.Replace("/", "-");
+        str = str.Replace("\r", "");
+        str = str.Replace("\n", "");
+        str = str.Replace("\"", "");
+        str = str.Replace(".", "");
+        str = str.Replace("(", "");
+        str = str.Replace(")", "");
+        str = str.Replace("!", "");
+        str = str.Replace("--", "-");
+        if (str.LastIndexOf('-') == str.Length - 1)
+            str = str.Substring(0, str.Length - 1);
+        return str;
+    }
+
+    public static void exploreWep(JObject hero, String key, int point1, int point2, SinglePerson person)
+    {
+        List<String> vals = new List<string>();
+        if (hero[key] != null)
+        {
+            JArray arr = (JArray)hero[key];
+            vals.AddRange(arr.ToObject<string[]>());
+        }
+        for (int i = 4; i >= 0; i--)
+        {
+            if (person.Skills[i, point2] != null && person.Skills[i, point2].ToString() != "")
+            {
+                string val = convStr(person.getStuffExclusive(person.Skills[i, point2], ""));
+                if (!vals.Contains(val))
+                {
+                    vals.Add(val);
+                }
+            }
+            if (person.Skills[i, point1] != null && person.Skills[i, point1].ToString() != "")
+            {
+                string val = convStr(person.getStuffExclusive(person.Skills[i, point1], ""));
+                if (val .Equals ("falchion") && person.HeroName .Equals ("Alm"))
+                    val = "falchion-2";
+                if (val .Equals( "falchion" ) && (person.HeroName .Equals ("Chrom") || person.HeroName.Equals("Lucina")))
+                    val = "falchion-1";
+                if (val .Equals ("missiletainn") && (person.HeroName .Equals ("Owain")))
+                    val = "missiletainn-sword";
+                if (!vals.Contains(val))
+                {
+                    vals.Add(val);
+                }
+            }
+        }
+        if(vals.Count > 0)
+            hero[key] = JArray.FromObject(vals.ToArray());
+    }
+
+    public static void exploreSkill(JObject hero, String key, int point1, SinglePerson person)
+    {
+        List<String> vals = new List<string>();
+        if (hero[key] != null)
+        {
+            JArray arr = (JArray)hero[key];
+            vals.AddRange(arr.ToObject<string[]>());
+        }
+        for (int i = 4; i >= 0; i--)
+        {
+            if (person.Skills[i, point1] != null && person.Skills[i, point1].ToString() != "")
+            {
+                String val = convStr(person.getStuffExclusive(person.Skills[i, point1], ""));
+                if (!vals.Contains(val))
+                {
+                    vals.Add(val);
+                }
+            }
+        }
+        if (vals.Count > 0)
+            hero[key] = JArray.FromObject(vals.ToArray());
+    }
+
+    public static void insertStats(JObject hero, String key1, string key2, Stats person)
+    {
+        hero[key1][key2]["hp"] = person.Hp.Value;
+        hero[key1][key2]["atk"] = person.Atk.Value;
+        hero[key1][key2]["spd"] = person.Spd.Value;
+        hero[key1][key2]["def"] = person.Def.Value;
+        hero[key1][key2]["res"] = person.Res.Value;
+    }
+
+    public static void openFolder(string path, string kageroPath, string topPath)
+    {
+        string baseHeroPath = kageroPath + Path.DirectorySeparatorChar + "public" + Path.DirectorySeparatorChar + "data" + Path.DirectorySeparatorChar + "heroes" + Path.DirectorySeparatorChar;
+        string imagesBasePath = kageroPath + Path.DirectorySeparatorChar + "images";
+        if (Directory.Exists(path))
+        {
+            foreach (string p in (new DirectoryInfo(path)).GetFiles().Select(f => f.FullName))
+                openFolder(p, kageroPath, topPath);
+            foreach (string p in (new DirectoryInfo(path)).GetDirectories().Select(f => f.FullName))
+                openFolder(p, kageroPath, topPath);
+        }
+        else if (File.Exists(path) && Path.GetExtension(path).ToLower().Equals(".lz"))
+        {
+            byte[] data = Decompression.Open(path);
+            if (data != null)
+            {
+                HSDARC a = new HSDARC(0, data);
+                while (a.Ptr_list_length - a.NegateIndex > a.Index)
+                {
+                    tmp.InsertIn(a, offset, data);
+                    for (int i = 0; i < tmp.Things.Length; i++)
+                    {
+                        if (tmp.Things[i].Roman.Value != "NONE")
+                        {
+                            tmp.Things[i].getCharacterStuff();
+                            String heroId = tmp.Things[i].HeroName + ", " + tmp.Things[i].Epithet;
+                            String heroPath = baseHeroPath + convStr(heroId) + ".json";
+                            JObject hero = new JObject();
+                            if (File.Exists(heroPath))
+                                hero = JObject.Parse(File.ReadAllText(heroPath));
+                            hero["display"] = heroId;
+                            hero["name"] = tmp.Things[i].HeroName;
+                            hero["title"] = tmp.Things[i].Epithet;
+                            hero["id"] = convStr(heroId);
+                            hero["description"] = tmp.Things[i].Description;
+                            hero["voice_actor"] = tmp.Things[i].Voice;
+                            hero["illustrator"] = tmp.Things[i].Illust;
+                            if (tmp.Things[i].Legendary.Bonuses != null)
+                                hero["legendary"] = true;
+                            hero["color"] = ExtractionBase.WeaponsData[tmp.Things[i].Weapon_type.Value].Color;
+                            hero["weapon_type"] = ExtractionBase.WeaponsData[tmp.Things[i].Weapon_type.Value].Name;
+                            hero["link"] = "https://kagerochart.com/hero/" + convStr(heroId);
+                            hero["move_type"] = ExtractionBase.Movement[tmp.Things[i].Move_type.Value];
+                            exploreWep(hero, "weapon", 0, 6, tmp.Things[i]);
+                            if(tmp.Things[i].HeroName.Equals("Arthur"))
+                                exploreWep(hero, "assist", 2, 8, tmp.Things[i]);
+                            else if(! tmp.Things[i].HeroName.Equals("Jeorge"))
+                            exploreWep(hero, "assist", 1, 7, tmp.Things[i]);
+                            if(tmp.Things[i].HeroName.Equals("Jeorge"))
+                                exploreWep(hero, "special", 1, 7, tmp.Things[i]);
+                            else if (!tmp.Things[i].HeroName.Equals("Arthur"))
+                                exploreWep(hero, "special", 2, 8, tmp.Things[i]);
+                            if (tmp.Things[i].HeroName.Equals("Abel"))
+                                exploreSkill(hero, "passive_a", 11, tmp.Things[i]);
+                            else if (tmp.Things[i].HeroName.Equals("Ogma"))
+                                exploreSkill(hero, "passive_a", 10, tmp.Things[i]);
+                            else if(!tmp.Things[i].HeroName.Equals("Gwendolyn"))
+                                exploreSkill(hero, "passive_a", 9, tmp.Things[i]);
+                            if (tmp.Things[i].HeroName.Equals("Gwendolyn"))
+                                exploreSkill(hero, "passive_b", 9, tmp.Things[i]);
+                            else if(!tmp.Things[i].HeroName.Equals("Ogma"))
+                                exploreSkill(hero, "passive_b", 10, tmp.Things[i]);
+                            if (!tmp.Things[i].HeroName.Equals("Abel"))
+                                exploreSkill(hero, "passive_c", 11, tmp.Things[i]);
+                            hero["base_stat"] = new JObject();
+                            hero["base_stat"]["star_5"] = new JObject();
+                            hero["base_stat"]["growth"] = new JObject();
+                            insertStats(hero, "base_stat", "star_5", tmp.Things[i].Base_stats);
+                            insertStats(hero, "base_stat", "growth", tmp.Things[i].Growth_rates);
+                            hero["base_stat"]["growth"]["total"] = (tmp.Things[i].Growth_rates.Hp.Value + tmp.Things[i].Growth_rates.Atk.Value + tmp.Things[i].Growth_rates.Spd.Value + tmp.Things[i].Growth_rates.Def.Value + tmp.Things[i].Growth_rates.Res.Value);
+                            hero["base_stat"]["growth_type"] = tmp.Things[i].Base_vector_id.Value;
+                            hero["base_stat"]["dragonflower"] = tmp.Things[i].Dragonflowers.Value;
+                            File.WriteAllText(heroPath, hero.ToString());
+                            Directory.CreateDirectory(imagesBasePath);
+                            string heroImgPath = topPath + Path.DirectorySeparatorChar + "Common" + Path.DirectorySeparatorChar + "Face" + Path.DirectorySeparatorChar + tmp.Things[i].Face_name.Value;
+                            DirectoryCopyMethod.DirectoryCopy(heroImgPath, imagesBasePath + Path.DirectorySeparatorChar + convStr(heroId), false);
+
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
 public class ExtractUtils
 {
     public static int getInt(long a, byte[] data)
@@ -265,4 +459,45 @@ public class StringXor : Xor
     }
 
     public String Value { get => value; set => this.value = value; }
+}
+
+class DirectoryCopyMethod
+{
+    public static void DirectoryCopy(string sourceDirName, string destDirName, bool copySubDirs)
+    {
+        // Get the subdirectories for the specified directory.
+        DirectoryInfo dir = new DirectoryInfo(sourceDirName);
+
+        if (!dir.Exists)
+        {
+            throw new DirectoryNotFoundException(
+                "Source directory does not exist or could not be found: "
+                + sourceDirName);
+        }
+
+        DirectoryInfo[] dirs = dir.GetDirectories();
+        // If the destination directory doesn't exist, create it.
+        if (!Directory.Exists(destDirName))
+        {
+            Directory.CreateDirectory(destDirName);
+        }
+
+        // Get the files in the directory and copy them to the new location.
+        FileInfo[] files = dir.GetFiles();
+        foreach (FileInfo file in files)
+        {
+            string temppath = Path.Combine(destDirName, file.Name);
+            file.CopyTo(temppath, false);
+        }
+
+        // If copying subdirectories, copy them and their contents to new location.
+        if (copySubDirs)
+        {
+            foreach (DirectoryInfo subdir in dirs)
+            {
+                string temppath = Path.Combine(destDirName, subdir.Name);
+                DirectoryCopy(subdir.FullName, temppath, copySubDirs);
+            }
+        }
+    }
 }
