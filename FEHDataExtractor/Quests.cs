@@ -96,7 +96,7 @@ namespace FEHDataExtractor
         Int32Xor payload_size;             // XOR cipher: 62 D6 5A 74
 
         public static readonly string[] TriggerType = { "", "On foe defeat", "On scenario clear", "On Arena Assault clear", "On Tap Battle floor clear", "On Tap Battle boss clear" };
-        public static readonly string[] GameModeType = { "", "Normal Map", "", "Special Map", "", "Training Tower", "Arena Duel", "Voting Gauntlet", "Tempest Trials", "", "", "Arena Assault", "Tap Battle", "", "Grand Conquests", "", "", "Aether Raids", "Heroic Ordeals", "Alliegence Battles" };
+        public static readonly string[] GameModeType = { "", "Normal Map", "", "Special Map", "", "Training Tower", "Arena Duel", "Voting Gauntlet", "Tempest Trials", "", "", "Arena Assault", "Tap Battle", "", "Grand Conquests", "", "", "Aether Raids", "Heroic Ordeals", "Alliegence Battles", "Aether Raids Practice" };
         public static readonly string[] Difficulties = { "", "Hard", "Lunatic", "Infernal", "", "", "Intermediate", "Advanced", "", "", "", "consecutive battles to win" };
 
 
