@@ -53,7 +53,7 @@ public abstract class ExtractionBase
     public static SingleWeaponClass[] WeaponsData;
     public static readonly String[] Tome_Elem = { "None", "Fire", "Thunder", "Wind", "Light", "Dark" };
     public static readonly String[] Movement = { "Infantry", "Armored", "Cavalry", "Flying" };
-    public static readonly String[] Series = { "Heroes", "Shadow Dragon and the Blade of Light / Mystery of the Emblem / Shadow Dragon / New Mystery of the Emblem", "Gaiden / Echoes", "Genealogy of the Holy War", "Thracia 776", "The Binding Blade", "The Blazing Blade", "The Sacred Stones", "Path of Radiance", "Radiant Dawn", "Awakening", "Fates" };
+    public static readonly String[] Series = { "Heroes", "Shadow Dragon and the Blade of Light / Mystery of the Emblem / Shadow Dragon / New Mystery of the Emblem", "Gaiden / Echoes", "Genealogy of the Holy War", "Thracia 776", "The Binding Blade", "The Blazing Blade", "The Sacred Stones", "Path of Radiance", "Radiant Dawn", "Awakening", "Fates", "Three Houses" };
     public static readonly String[] BadgeColor = { "Scarlet", "Azure", "Verdant", "Trasparent" };
     public static readonly String[] ShardColor = { "Universal", "Scarlet", "Azure", "Verdant", "Trasparent" };
     public static readonly String[] SkillCategory = { "Weapon", "Assist", "Special", "Passive A", "Passive B", "Passive C", "Sacred Seal", "Refined Weapon Skill Effect", "Beast Effect" };
