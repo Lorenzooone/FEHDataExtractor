@@ -82,7 +82,7 @@ namespace FEHDataExtractor
     {
         byte kind;
 
-        public static readonly String[] Thing = { "Orb", "Hero", "Hero Feather", "Stamina Potion", "Dueling Crest", "Light's Blessing", "Crystal", "", "", "", "", "", "Badge", "Battle Flag", "Sacred Seal", "Arena Assault Item", "Sacred Coin", "Refining Stone", "Divine Dew", "Arena Medal", "Blessing", "Conquest Lance", "Accessory", "Conversation", "", "Arena Crown", "Heroic Grail", "Aether Stone", "Throne", "Summoning Ticket", "Dragonflower" };
+        public static readonly StringsUpdatable Thing = new StringsUpdatable(new string[]{ "Orb", "Hero", "Hero Feather", "Stamina Potion", "Dueling Crest", "Light's Blessing", "Crystal", "", "", "", "", "", "Badge", "Battle Flag", "Sacred Seal", "Arena Assault Item", "Sacred Coin", "Refining Stone", "Divine Dew", "Arena Medal", "Blessing", "Conquest Lance", "Accessory", "Conversation", "", "Arena Crown", "Heroic Grail", "Aether Stone", "Throne", "Summoning Ticket", "Dragonflower", "Forma Torch" });
 
         public override void InsertIn(long a, byte[] data)
         {
@@ -108,7 +108,7 @@ namespace FEHDataExtractor
 
         public override string ToString()
         {
-            String text = Thing[Kind] + ": " + (Table.Contains("M" + Rew) ? Table["M" + Rew] : Rew);
+            String text = Thing.getString(Kind) + ": " + (Table.Contains("M" + Rew) ? Table["M" + Rew] : Rew);
             return text;
         }
 
@@ -151,7 +151,7 @@ namespace FEHDataExtractor
 
         public override string ToString()
         {
-            String text = Thing[Kind] + ": " + getHeroName(Rew) + " " + Rarity + " Star";
+            String text = Thing.getString(Kind) + ": " + getHeroName(Rew) + " " + Rarity + " Star";
             text += Rarity == 1 ? "" : "s";
             return text;
         }
@@ -174,7 +174,7 @@ namespace FEHDataExtractor
 
         public override string ToString()
         {
-            String text = Ranks[Support] + " " + Thing[Kind] + " with " + getHeroName(Rew);
+            String text = Ranks.getString(Support) + " " + Thing.getString(Kind) + " with " + getHeroName(Rew);
             return text;
         }
 
@@ -198,7 +198,7 @@ namespace FEHDataExtractor
 
         public override string ToString()
         {
-            String text = Count + " " + Thing[Kind];
+            String text = Count + " " + Thing.getString(Kind);
             text += Count > 1 ? "s" : "";
             text += Kind == 5 ? " (Revival Item)" : "";
             return text;
@@ -223,7 +223,7 @@ namespace FEHDataExtractor
 
         public override string ToString()
         {
-            String text = Count + " " + Thing[Kind] + " " + (Table.Contains("M" + Rew) ? Table["M" + Rew] : Rew);
+            String text = Count + " " + Thing.getString(Kind) + " " + (Table.Contains("M" + Rew) ? Table["M" + Rew] : Rew);
             return text;
         }
     }
@@ -243,7 +243,7 @@ namespace FEHDataExtractor
 
         public override string ToString()
         {
-            String text = Count + " " + LegendaryElement[Element - 1] + " " + Thing[Kind];
+            String text = Count + " " + LegendaryElement.getString(Element - 1) + " " + Thing.getString(Kind);
             text += Count > 1 ? "s" : "";
             return text;
         }
@@ -264,7 +264,7 @@ namespace FEHDataExtractor
 
         public override string ToString()
         {
-            String text = Count + " " + Movement[Type] + " " + Thing[Kind];
+            String text = Count + " " + Movement.getString(Type) + " " + Thing.getString(Kind);
             text += Count > 1 ? "s" : "";
             return text;
         }
@@ -286,7 +286,7 @@ namespace FEHDataExtractor
 
         public override string ToString()
         {
-            String text = Count + " " + Thrones[Thronetype] + " " + Thing[Kind];
+            String text = Count + " " + Thrones[Thronetype] + " " + Thing.getString(Kind);
             text += Count > 1 ? "s" : "";
             return text;
         }
@@ -295,7 +295,7 @@ namespace FEHDataExtractor
     public class ArenaAssaultItem : SingleCountDependant
     {
         private byte item;
-        public readonly string[] ArenaAssaultItems = { "Elixir", "Fortifying Horn", "Special Blade", "Infantry Boots", "Naga's Tear", "Dancer's Veil", "Lightning Charm", "Panic Charm", "Fear Charm", "Pressure Charm" };
+        public readonly StringsUpdatable ArenaAssaultItems = new StringsUpdatable(new string[]{ "Elixir", "Fortifying Horn", "Special Blade", "Infantry Boots", "Naga's Tear", "Dancer's Veil", "Lightning Charm", "Panic Charm", "Fear Charm", "Pressure Charm" });
 
         public byte Item { get => item; set => item = value; }
 
@@ -308,7 +308,7 @@ namespace FEHDataExtractor
 
         public override string ToString()
         {
-            String text = Count + " " + ArenaAssaultItems[Item];
+            String text = Count + " " + ArenaAssaultItems.getString(Item);
             text += Count > 1 ? "s" : "";
             return text;
         }
@@ -332,8 +332,8 @@ namespace FEHDataExtractor
 
         public override string ToString()
         {
-            String text = Count + " " + ShardColor[Color] + " ";
-            text += Is_Crystal == 1 ? Thing[Kind] : "Shard";
+            String text = Count + " " + ShardColor.getString(Color) + " ";
+            text += Is_Crystal == 1 ? Thing.getString(Kind) : "Shard";
             text += Count > 1 ? "s" : "";
             return text;
         }
@@ -357,8 +357,8 @@ namespace FEHDataExtractor
 
         public override string ToString()
         {
-            String text = Count + " " + BadgeColor[Color] + " ";
-            text += Is_Great == 0 ? Thing[Kind] : "Great " + Thing[Kind];
+            String text = Count + " " + BadgeColor.getString(Color) + " ";
+            text += Is_Great == 0 ? Thing.getString(Kind) : "Great " + Thing.getString(Kind);
             text += Count > 1 ? "s" : "";
             return text;
         }

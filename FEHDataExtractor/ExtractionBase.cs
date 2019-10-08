@@ -2,6 +2,27 @@
 using System;
 using System.Collections;
 
+//Make the program less crash-happy when things get updated
+public class StringsUpdatable
+{
+    private String[] strs;
+    public int Length;
+
+    public StringsUpdatable(String[] strs)
+    {
+        this.strs = strs;
+        Length = strs.Length;
+    }
+
+    public string getString(int index)
+    {
+        if (index >= 0 && index < strs.Length)
+            return strs[index];
+        else
+            return "??? UNKNOWN VALUE, MUST BE UPDATED, VALUE = " + index;
+    }
+}
+
 public class HSDARC
 {
     public static int offset = 0x20;
@@ -49,17 +70,17 @@ public abstract class ExtractionBase
 {
     public static readonly int offset = 0x20;
     private static Hashtable table = new Hashtable();
-    public static String[] WeaponNames = { "Sword", "Lance", "Axe", "Red Bow", "Blue Bow", "Green Bow", "Bow", "Red Dagger", "Blue Dagger", "Green Dagger", "Dagger", "Red Tome", "Blue Tome", "Green Tome", "Staff", "Red Breath", "Blue Breath", "Green Breath", "Colorless Breath", "Red Beast", "Blue Beast", "Green Beast", "Colorless Beast" };
+    public static StringsUpdatable WeaponNames = new StringsUpdatable(new string[]{ "Sword", "Lance", "Axe", "Red Bow", "Blue Bow", "Green Bow", "Bow", "Red Dagger", "Blue Dagger", "Green Dagger", "Dagger", "Red Tome", "Blue Tome", "Green Tome", "Staff", "Red Breath", "Blue Breath", "Green Breath", "Colorless Breath", "Red Beast", "Blue Beast", "Green Beast", "Colorless Beast" });
     public static SingleWeaponClass[] WeaponsData;
-    public static readonly String[] Tome_Elem = { "None", "Fire", "Thunder", "Wind", "Light", "Dark" };
-    public static readonly String[] Movement = { "Infantry", "Armored", "Cavalry", "Flying" };
-    public static readonly String[] Series = { "Heroes", "Shadow Dragon and the Blade of Light / Mystery of the Emblem / Shadow Dragon / New Mystery of the Emblem", "Gaiden / Echoes", "Genealogy of the Holy War", "Thracia 776", "The Binding Blade", "The Blazing Blade", "The Sacred Stones", "Path of Radiance", "Radiant Dawn", "Awakening", "Fates", "Three Houses" };
-    public static readonly String[] BadgeColor = { "Scarlet", "Azure", "Verdant", "Trasparent" };
-    public static readonly String[] ShardColor = { "Universal", "Scarlet", "Azure", "Verdant", "Trasparent" };
-    public static readonly String[] SkillCategory = { "Weapon", "Assist", "Special", "Passive A", "Passive B", "Passive C", "Sacred Seal", "Refined Weapon Skill Effect", "Beast Effect" };
-    public static readonly String[] Ranks = { "C", "B", "A", "S" };
-    public static readonly String[] LegendaryElement = { "Fire", "Water", "Wind", "Earth", "Light", "Dark", "Astra", "Anima" };
-    public static readonly String[] Colours = { "Red", "Blue", "Green", "Colorless" };
+    public static readonly StringsUpdatable Tome_Elem = new StringsUpdatable(new string[] { "None", "Fire", "Thunder", "Wind", "Light", "Dark" });
+    public static readonly StringsUpdatable Movement = new StringsUpdatable(new string[] { "Infantry", "Armored", "Cavalry", "Flying" });
+    public static readonly StringsUpdatable Series = new StringsUpdatable(new string[] { "Heroes", "Shadow Dragon and the Blade of Light / Mystery of the Emblem / Shadow Dragon / New Mystery of the Emblem", "Gaiden / Echoes", "Genealogy of the Holy War", "Thracia 776", "The Binding Blade", "The Blazing Blade", "The Sacred Stones", "Path of Radiance", "Radiant Dawn", "Awakening", "Fates", "Three Houses" });
+    public static readonly StringsUpdatable BadgeColor = new StringsUpdatable(new string[] { "Scarlet", "Azure", "Verdant", "Trasparent" });
+    public static readonly StringsUpdatable ShardColor = new StringsUpdatable(new string[] { "Universal", "Scarlet", "Azure", "Verdant", "Trasparent" });
+    public static readonly StringsUpdatable SkillCategory = new StringsUpdatable(new string[] { "Weapon", "Assist", "Special", "Passive A", "Passive B", "Passive C", "Sacred Seal", "Refined Weapon Skill Effect", "Beast Effect" });
+    public static readonly StringsUpdatable Ranks = new StringsUpdatable(new string[] { "C", "B", "A", "S" });
+    public static readonly StringsUpdatable LegendaryElement = new StringsUpdatable(new string[] { "Fire", "Water", "Wind", "Earth", "Light", "Dark", "Astra", "Anima" });
+    public static readonly StringsUpdatable Colours = new StringsUpdatable(new string[] { "Red", "Blue", "Green", "Colorless" });
     private byte[] elemXor;
     private int size = 0;
 
@@ -322,16 +343,24 @@ public class Stats : ExtractionBase
     public Int16Xor Unknown3 { get => unknown3; set => unknown3 = value; }
 }
 
-public class Legendary : ExtractionBase
+public class Legendary : CommonRelated
 {
+    public static readonly StringsUpdatable LegKind = new StringsUpdatable(new string[] { "Legendary/Mythic", "Duo" });
+    private StringXor duo_skill_id;
     private Stats bonuses;
+    private ByteXor kind;
     private ByteXor element;
+    private ByteXor bst;
+    private ByteXor is_duel;
 
     public Legendary()
     {
         Size = 17; //It's a pointer, so who cares about size
         Name = "";
+        Kind = new ByteXor(0x21);
         Element = new ByteXor(5);
+        Bst = new ByteXor(0x0F);
+        Is_duel = new ByteXor(0x80);
     }
 
     public Legendary(long a, byte[] data) : this()
@@ -341,8 +370,13 @@ public class Legendary : ExtractionBase
 
     override public String ToString()
     {
-        String text = "Bonus Stats: " + Bonuses;
-        text += "Element: " + LegendaryElement[Element.Value - 1] + Environment.NewLine;
+        String text = "";
+        text += Duo_skill_id.Value != "" ? getStuffExclusive(Duo_skill_id, "Duo Skill: ") : "";
+        text += "Kind: " + LegKind.getString(Kind.Value - 1) + Environment.NewLine;
+        text += "Bonus Stats: " + Bonuses;
+        text += Element.Value != 0 ? "Element: " + LegendaryElement.getString(Element.Value - 1) + Environment.NewLine : "";
+        text += Bst.Value != 0 ? "Arena BST: " + Bst.Value + Environment.NewLine : "";
+        text += Is_duel.Value != 0 ? "Duel Hero" + Environment.NewLine : "";
 
         return text;
     }
@@ -351,13 +385,21 @@ public class Legendary : ExtractionBase
     {
         if (a != offset)
         {
-            Bonuses = new Stats(a, data);
-            Element.XorValue(data[a + 0x10]);
+            Duo_skill_id = new StringXor(ExtractUtils.getLong(a, data) + offset, data, Common);
+            Bonuses = new Stats(a + 8, data);
+            Kind.XorValue(data[a + 0x18]);
+            Element.XorValue(data[a + 0x19]);
+            Bst.XorValue(data[a + 0x1A]);
+            Is_duel.XorValue(data[a + 0x1B]);
         }
     }
 
     public Stats Bonuses { get => bonuses; set => bonuses = value; }
     public ByteXor Element { get => element; set => element = value; }
+    public StringXor Duo_skill_id { get => duo_skill_id; set => duo_skill_id = value; }
+    public ByteXor Bst { get => bst; set => bst = value; }
+    public ByteXor Is_duel { get => is_duel; set => is_duel = value; }
+    public ByteXor Kind { get => kind; set => kind = value; }
 }
 
 public class SingleEnemy : CharacterRelated
@@ -436,9 +478,9 @@ public class SingleEnemy : CharacterRelated
         text += "Timestamp: ";
         text += Timestamp.Value < 0 ? "Not available" + Environment.NewLine : DateTimeOffset.FromUnixTimeSeconds(Timestamp.Value).DateTime.ToLocalTime() + Environment.NewLine;
         text += "ID: " + Id_num + Environment.NewLine;
-        text += "Weapon: " + WeaponNames[Weapon_type.Value] + Environment.NewLine;
-        text += "Tome Element: " + Tome_Elem[Tome_class.Value] + Environment.NewLine;
-        text += "Movement Type: " + Movement[Move_type.Value] + Environment.NewLine;
+        text += "Weapon: " + WeaponNames.getString(Weapon_type.Value) + Environment.NewLine;
+        text += "Tome Element: " + Tome_Elem.getString(Tome_class.Value) + Environment.NewLine;
+        text += "Movement Type: " + Movement.getString(Move_type.Value) + Environment.NewLine;
         text += Spawnable_Enemy.Value == 0 ? "Randomly spawnable enemy" + Environment.NewLine : "Not randomly spawnable enemy" + Environment.NewLine;
         text += Is_boss.Value == 0 ? "Normal enemy" + Environment.NewLine : "Special enemy" + Environment.NewLine;
         text += "5 Stars Level 1 Stats: " + Base_stats;
@@ -579,10 +621,10 @@ public class SinglePerson : CharacterRelated
         text += Timestamp.Value < 0 ? "Not available" + Environment.NewLine : DateTimeOffset.FromUnixTimeSeconds(Timestamp.Value).DateTime.ToLocalTime() + Environment.NewLine;
         text += "ID: " + Id_num + Environment.NewLine;
         text += "Sort Value: " + Sort_value + Environment.NewLine;
-        text += "Weapon: " + WeaponNames[Weapon_type.Value] + Environment.NewLine;
-        text += "Tome Element: " + Tome_Elem[Tome_class.Value] + Environment.NewLine;
-        text += "Movement Type: " + Movement[Move_type.Value] + Environment.NewLine;
-        text += "Series: " + Series[Series1.Value] + Environment.NewLine;
+        text += "Weapon: " + WeaponNames.getString(Weapon_type.Value) + Environment.NewLine;
+        text += "Tome Element: " + Tome_Elem.getString(Tome_class.Value) + Environment.NewLine;
+        text += "Movement Type: " + Movement.getString(Move_type.Value) + Environment.NewLine;
+        text += "Series: " + Series.getString(Series1.Value) + Environment.NewLine;
         text += Regular_hero.Value == 0 ? "Not randomly spawnable hero" + Environment.NewLine : "Randomly spawnable hero" + Environment.NewLine;
         text += Permanent_hero.Value == 0 ? "Can be sent home and merged" + Environment.NewLine : "Cannot be sent home or merged" + Environment.NewLine;
         text += "BVID: " + Base_vector_id + Environment.NewLine;
@@ -1055,9 +1097,9 @@ public class SingleSkill : CommonRelated
             if (((Wep_equip.Value & tmp)>>i) == 1)
             {
                 if (!start)
-                    tmp2 += ", " + WeaponNames[i];
+                    tmp2 += ", " + WeaponNames.getString(i);
                 else
-                    tmp2 += " " + WeaponNames[i];
+                    tmp2 += " " + WeaponNames.getString(i);
                 if (Category.Value == 0)
                 {
                     if (WeaponsData[i].Is_breath)
@@ -1147,8 +1189,8 @@ public class SingleSkill : CommonRelated
         text += "Can be equipped by:" + tmp2 + Environment.NewLine;
         text += "Can be equipped by:" + ExtractUtils.BitmaskConvertToString(Mov_equip.Value, Movement) + Environment.NewLine;
         text += "Sp cost: " + Sp_cost + Environment.NewLine;
-        text += "Category: " + SkillCategory[Category.Value] + Environment.NewLine;
-        text += "Tome Element: " + Tome_Elem[Tome_class.Value] + Environment.NewLine;
+        text += "Category: " + SkillCategory.getString(Category.Value) + Environment.NewLine;
+        text += "Tome Element: " + Tome_Elem.getString(Tome_class.Value) + Environment.NewLine;
         text += Exclusive.Value == 1 ? "Exclusive skill" + Environment.NewLine : "Inheritable skill" + Environment.NewLine;
         text += Enemy_only.Value == 1 ? "Enemy exclusive" + Environment.NewLine : "Not enemy exclusive" + Environment.NewLine;
         text += Range.Value == 0 ? "Can't have range" + Environment.NewLine : "Range: " + Range + Environment.NewLine;

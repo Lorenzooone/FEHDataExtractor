@@ -48,12 +48,12 @@ namespace FEHDataExtractor
             string text = "";
             if (!Hero_id.Value.Equals(""))
                 text += getHeroName(Hero_id.Value) + ", ";
-            text += Color.Value != -1 ? "Color: " + Colours[Color.Value] + ", " : "";
-            text += Wep_type.Value != -1 ? "Weapon: " + WeaponNames[Wep_type.Value] + ", " : "";
-            text += Mov_type.Value != -1 ? "Movement: " + Movement[Mov_type.Value] + ", " : "";
+            text += Color.Value != -1 ? "Color: " + Colours.getString(Color.Value) + ", " : "";
+            text += Wep_type.Value != -1 ? "Weapon: " + WeaponNames.getString(Wep_type.Value) + ", " : "";
+            text += Mov_type.Value != -1 ? "Movement: " + Movement.getString(Mov_type.Value) + ", " : "";
             text += Lv.Value != -1 ? "At least level: " + Lv + ", " : "";
-            text += Blessing.Value != 0 ? "Legendary/Blessed: " + LegendaryElement[Blessing.Value - 1] + ", " : "";
-            text += Blessed.Value != 0 ? "Blessed: " + LegendaryElement[Blessed.Value - 1] + ", " : "";
+            text += Blessing.Value != 0 ? "Legendary/Blessed: " + LegendaryElement.getString(Blessing.Value - 1) + ", " : "";
+            text += Blessed.Value != 0 ? "Blessed: " + LegendaryElement.getString(Blessed.Value - 1) + ", " : "";
             if (!text.Equals(""))
                 text = text.Remove(text.Length - 2);
             return text;
@@ -95,9 +95,9 @@ namespace FEHDataExtractor
         Reward_Payload reward;
         Int32Xor payload_size;             // XOR cipher: 62 D6 5A 74
 
-        public static readonly string[] TriggerType = { "", "On foe defeat", "On scenario clear", "On Arena Assault clear", "On Tap Battle floor clear", "On Tap Battle boss clear" };
-        public static readonly string[] GameModeType = { "", "Normal Map", "", "Special Map", "", "Training Tower", "Arena Duel", "Voting Gauntlet", "Tempest Trials", "", "", "Arena Assault", "Tap Battle", "", "Grand Conquests", "", "", "Aether Raids", "Heroic Ordeals", "Alliegence Battles", "Aether Raids Practice", "Rökkr Battles" };
-        public static readonly string[] Difficulties = { "", "Hard", "Lunatic", "Infernal", "", "", "Intermediate", "Advanced", "", "", "", "consecutive battles to win" };
+        public static readonly StringsUpdatable TriggerType = new StringsUpdatable(new string[]{ "", "On foe defeat", "On scenario clear", "On Arena Assault clear", "On Tap Battle floor clear", "On Tap Battle boss clear", "On Forma floor clear...?", "On Forma tower clear...?" });
+        public static readonly StringsUpdatable GameModeType = new StringsUpdatable(new string[] { "", "Normal Map", "", "Special Map", "", "Training Tower", "Arena Duel", "Voting Gauntlet", "Tempest Trials", "", "", "Arena Assault", "Tap Battle", "", "Grand Conquests", "", "", "Aether Raids", "Heroic Ordeals", "Alliegence Battles", "Aether Raids Practice", "Rökkr Battles", "Forma Tower...?" });
+        public static readonly StringsUpdatable Difficulties = new StringsUpdatable(new string[] { "", "Hard", "Lunatic", "Infernal", "", "", "Intermediate", "Advanced", "", "", "", "consecutive battles to win" });
 
 
         public Quest_definition()
@@ -139,10 +139,10 @@ namespace FEHDataExtractor
             if (!Common_id.Value.Equals(""))
                 text += "Shared ID: " + Common_id + Environment.NewLine;
             text += "Has to be done: " + Times + (Times.Value == 1 ? " Time":" Times") + Environment.NewLine;
-            text += TriggerType[Trigger.Value] + (Trigger.Value == 0 ? "" : Environment.NewLine);
+            text += TriggerType.getString((int)Trigger.Value) + (Trigger.Value == 0 ? "" : Environment.NewLine);
             text += Map_group.Value.Equals("") ? "" : "Map Group: " + Map_group + Environment.NewLine;
-            text += Game_mode.Value == 0 ? "" : "Game Mode: " + GameModeType[Game_mode.Value] + Environment.NewLine;
-            text += Difficulty.Value == -1 ? "" : "Difficulty: " + (Game_mode.Value <= 3 ? Difficulties[Difficulty.Value] : (Game_mode.Value == 6 ? Difficulties[Difficulty.Value + 5] : (Difficulty.Value == 1 ? "1 battle to win" : Difficulty.Value + " " + Difficulties[11]))) + Environment.NewLine;
+            text += Game_mode.Value == 0 ? "" : "Game Mode: " + GameModeType.getString((int)Game_mode.Value) + Environment.NewLine;
+            text += Difficulty.Value == -1 ? "" : "Difficulty: " + (Game_mode.Value <= 3 ? Difficulties.getString(Difficulty.Value) : (Game_mode.Value == 6 ? Difficulties.getString(Difficulty.Value + 5) : (Difficulty.Value == 1 ? "1 battle to win" : Difficulty.Value + " " + Difficulties.getString(11)))) + Environment.NewLine;
             text += Survive.Value == -1 ? "" : Survive + " units need to survive" + Environment.NewLine;
             text += Map_id.Value.Equals("")? "" : "Map ID: " + Map_id + Environment.NewLine;
             text += "Unit requirements: " + Unit_reqs + Environment.NewLine;

@@ -208,7 +208,7 @@ public class ExtractUtils
         return (long)data[a] + ((long)data[a + 1] << 8) + ((long)data[a + 2] << 16) + ((long)data[a + 3] << 24) + ((long)data[a + 4] << 32) + ((long)data[a + 5] << 40) + ((long)data[a + 6] << 48) + ((long)data[a + 7] << 56);
     }
 
-    public static String BitmaskConvertToString(UInt32 value, String[] Names) {
+    public static String BitmaskConvertToString(UInt32 value, StringsUpdatable Names) {
         String text = "";
         int tmp = 1;
         bool start = true;
@@ -217,9 +217,9 @@ public class ExtractUtils
             if (((value & tmp) >> i) == 1)
             {
                 if (!start)
-                    text += ", " + Names[i];
+                    text += ", " + Names.getString(i);
                 else
-                    text += " " + Names[i];
+                    text += " " + Names.getString(i);
                 start = false;
             }
             tmp = tmp << 1;

@@ -8,7 +8,7 @@ namespace FEHDataExtractor
 {
     public class Forging_Bonds : FBRelated
     {
-        private static string[] hearts = { "Green   ", "Blue    ", "Red     ", "Yellow  ", "Unknown ", "Unknown2" };
+        private static StringsUpdatable hearts = new StringsUpdatable(new string[]{ "Green   ", "Blue    ", "Red     ", "Yellow  ", "Unknown ", "Unknown2" });
 
         private StringXor id_tag;
         private StringXor reference;
@@ -191,7 +191,7 @@ namespace FEHDataExtractor
             {
                 text += "Day " + (i + 1) + (i < 9? " ":"") + ": ";
                 for (int j = 0; j < MultiplierSize.Value / days; j++)
-                    text += string.Format(new System.Globalization.CultureInfo("en-US"), "{0:N1}", get_multiplier((uint)((i * ((int)(MultiplierSize.Value / days))) + j), MultipliersValues.Probs, MultipliersValues.Mults) / 100.0) + "x " + hearts[MultipliersCharacters[(i* (MultiplierSize.Value/days)) + j].Value];
+                    text += string.Format(new System.Globalization.CultureInfo("en-US"), "{0:N1}", get_multiplier((uint)((i * ((int)(MultiplierSize.Value / days))) + j), MultipliersValues.Probs, MultipliersValues.Mults) / 100.0) + "x " + hearts.getString((int)MultipliersCharacters[(i* (MultiplierSize.Value/days)) + j].Value);
                 text += Environment.NewLine;
             }
             return text;
