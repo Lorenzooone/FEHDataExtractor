@@ -137,7 +137,7 @@ namespace FEHDataExtractor
             text += !Sprite_base[1].ToString().Equals("") ? "Sprite: " + Sprite_base[1] + Environment.NewLine : "";
             text += "Base weapon: " + getStuffExclusive(Base_weapon, "");
             text += "Index: " + Index.Value + Environment.NewLine;
-            text += "Colour: " + Colours.getString(Color.Value) + Environment.NewLine;
+            text += "Colour: " + Colours.getString((Color.Value - 1) & 3) + Environment.NewLine;
             text += "Range: " + Range.Value + Environment.NewLine;
             text += "Equipment Group: " + Equip_group.Value + Environment.NewLine;
             text += "Targets: " + (Res_damage.Value == 1 ? "Resistance" : "Defense") + Environment.NewLine;
@@ -153,7 +153,6 @@ namespace FEHDataExtractor
     {
         private Int64Xor numElem;
         private WeaponClass[] things;
-        public static string[] Colors = {"Colorless", "Red", "Blue", "Green" };
 
         public Int64Xor NumElem { get => numElem; set => numElem = value; }
         internal WeaponClass[] Things { get => things; set => things = value; }
@@ -188,7 +187,7 @@ namespace FEHDataExtractor
                     text = text.Remove(text.IndexOf("."));
                     text = text.Contains("bow") ? text.Replace("bow", "Bow") : text;
                 }
-                alpha[Things[i].Index.Value] = new SingleWeaponClass(text, (int)Things[i].Index.Value, Colors[Things[i].Color.Value], Things[i].Range.Value, Things[i].Res_damage.Value == 1, Things[i].Is_staff.Value == 1, Things[i].Is_dagger.Value == 1, Things[i].Is_breath.Value == 1, Things[i].Is_beast.Value == 1);
+                alpha[Things[i].Index.Value] = new SingleWeaponClass(text, (int)Things[i].Index.Value, Colours.getString((Things[i].Color.Value - 1) & 3), Things[i].Range.Value, Things[i].Res_damage.Value == 1, Things[i].Is_staff.Value == 1, Things[i].Is_dagger.Value == 1, Things[i].Is_breath.Value == 1, Things[i].Is_beast.Value == 1);
                 Wp[Things[i].Index.Value] = alpha[Things[i].Index.Value].ToString();
             }
             WeaponNames = new StringsUpdatable(Wp);
