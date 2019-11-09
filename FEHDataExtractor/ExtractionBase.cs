@@ -868,11 +868,12 @@ public class SingleSkill : CommonRelated
     UInt32Xor target_mov;
     StringXor passive_next;
     Int64Xor timestamp;
-    ByteXor _unknown1;
+    ByteXor random_allowed;
     ByteXor min_lv;
     ByteXor max_lv;
-    ByteXor _unknown2;
-    ByteXor _unknown3;
+    ByteXor tt_inherit_base;
+    ByteXor random_mode;
+    ByteXor unknown_1;
                                        // 3 bytes of padding
 //    StringXor id_tag2;
 //    StringXor next_seal;
@@ -886,7 +887,7 @@ public class SingleSkill : CommonRelated
     {
         Name = "Skills";
         ElemXor = new byte[] { 0xAD, 0xE9, 0xDE, 0x4A, 0x07, 0xC7, 0xEC, 0x7F };
-        Size = 296;
+        Size = 304;
         Prerequisites = new StringXor[2];
         Sprites = new StringXor[4];
         Num_id = new UInt32Xor(0x23, 0x3A, 0xA5, 0xC6);
@@ -931,11 +932,12 @@ public class SingleSkill : CommonRelated
         Target_wep = new UInt32Xor(0xD7, 0xC9, 0x9F, 0x40);
         Target_mov = new UInt32Xor(0x22, 0xD1, 0x64, 0x6C);
         Timestamp = new Int64Xor(0x51, 0x9F, 0xFE, 0x3B, 0xF9, 0x39, 0x3F, 0xED);
-        Unknown1 = new ByteXor(0x10);
+        Random_allowed = new ByteXor(0x10);
         Min_lv = new ByteXor(0x90);
         Max_lv = new ByteXor(0x24);
-        Unknown2 = new ByteXor(0x19);
-        Unknown3 = new ByteXor(0xBD);
+        Tt_inherit_base = new ByteXor(0x19);
+        Random_mode = new ByteXor(0xBE);
+        Unknown_1 = new ByteXor(0x5C);
 /*        Ss_coin = new UInt16Xor(0x40, 0xC5);
         Ss_badge_type = new UInt16Xor(0x0F, 0xD5);
         Ss_badge = new UInt16Xor(0xEC, 0x8C);
@@ -1029,11 +1031,12 @@ public class SingleSkill : CommonRelated
         if (!Passive_next.Value.Equals(""))
             Archive.Index++;
         Timestamp.XorValue((ExtractUtils.getLong(a + 240, data)));
-        Unknown1.XorValue(data[a + 248]);
+        Random_allowed.XorValue(data[a + 248]);
         Min_lv.XorValue(data[a + 249]);
         Max_lv.XorValue(data[a + 250]);
-        Unknown2.XorValue(data[a + 251]);
-        Unknown3.XorValue(data[a + 252]);
+        Tt_inherit_base.XorValue(data[a + 251]);
+        Random_mode.XorValue(data[a + 252]);
+        Unknown_1.XorValue(data[a + 256]);
 /*        Id_tag2 = new StringXor(ExtractUtils.getLong(a + 256, data) + offset, data, Common);
         if (!Id_tag2.Value.Equals(""))
             Archive.Index++;
@@ -1232,17 +1235,20 @@ public class SingleSkill : CommonRelated
             text += getStuff(Passive_next, "Next Enemy Passive: ") + "Next Enemy Passive ID: " + Passive_next + Environment.NewLine;
         text += "Timestamp: ";
         text += Timestamp.Value < 0 ? "Not available" + Environment.NewLine : DateTimeOffset.FromUnixTimeSeconds(Timestamp.Value).DateTime.ToLocalTime() + Environment.NewLine;
+        text += (Random_allowed.Value == 0 ? "The skill cannot be used by random units" : "The skill may be equipped by random units") + Environment.NewLine;
         text += Min_lv.Value == 0 ? "" : "Minimum Enemy Level: " + Min_lv + Environment.NewLine;
         text += Max_lv.Value == 0 ? "" : "Maximum Enemy Level: " + Max_lv + Environment.NewLine;
-/*        if (!Next_seal.Value.Equals(""))
-            text += getStuff(Next_seal, "Next Seal: ") + "Next Seal ID: " + Next_seal + Environment.NewLine;
-        if (!Prev_seal.Value.Equals(""))
-            text += getStuff(Prev_seal, "Previous Seal: ") + "Previous Seal ID: " + Prev_seal + Environment.NewLine;
-        text += Ss_coin.Value == 0 ? "" : "Sacred Seal required Coins: " + Ss_coin + Environment.NewLine;
-        text += Ss_coin.Value == 0 ? "" : "Sacred Seal required Badge type: " + BadgeColor[Ss_badge_type.Value] + Environment.NewLine;
-        text += Ss_coin.Value == 0 ? "" : "Sacred Seal required Badges: " + Ss_badge + Environment.NewLine;
-        text += Ss_coin.Value == 0 ? "" : "Sacred Seal required Great Badges: " + Ss_great_badge + Environment.NewLine;
-*/       
+        text += (Tt_inherit_base.Value == 0 ? "The skill will not be considered for 10th Stratum of Training Tower" : "The skill will be considered for 10th Stratum of Training Tower if equipped in the base version of the map") + Environment.NewLine;
+        text += (Random_allowed.Value == 0 && Random_mode.Value == 0) ? "" : ((Random_mode.Value == 0 ? "The skill cannot be used by random units" : Random_mode.Value == 1 ? "The skill may be equipped by any random unit" : "The skill may be equipped by random units who normally own it") + Environment.NewLine);
+        /*        if (!Next_seal.Value.Equals(""))
+                    text += getStuff(Next_seal, "Next Seal: ") + "Next Seal ID: " + Next_seal + Environment.NewLine;
+                if (!Prev_seal.Value.Equals(""))
+                    text += getStuff(Prev_seal, "Previous Seal: ") + "Previous Seal ID: " + Prev_seal + Environment.NewLine;
+                text += Ss_coin.Value == 0 ? "" : "Sacred Seal required Coins: " + Ss_coin + Environment.NewLine;
+                text += Ss_coin.Value == 0 ? "" : "Sacred Seal required Badge type: " + BadgeColor[Ss_badge_type.Value] + Environment.NewLine;
+                text += Ss_coin.Value == 0 ? "" : "Sacred Seal required Badges: " + Ss_badge + Environment.NewLine;
+                text += Ss_coin.Value == 0 ? "" : "Sacred Seal required Great Badges: " + Ss_great_badge + Environment.NewLine;
+        */
         text += "-----------------------------------------------------------------------------------------------" + Environment.NewLine;
 
         return text;
@@ -1299,11 +1305,8 @@ public class SingleSkill : CommonRelated
     public UInt32Xor Target_mov { get => target_mov; set => target_mov = value; }
     public StringXor Passive_next { get => passive_next; set => passive_next = value; }
     public Int64Xor Timestamp { get => timestamp; set => timestamp = value; }
-    public ByteXor Unknown1 { get => _unknown1; set => _unknown1 = value; }
     public ByteXor Min_lv { get => min_lv; set => min_lv = value; }
     public ByteXor Max_lv { get => max_lv; set => max_lv = value; }
-    public ByteXor Unknown2 { get => _unknown2; set => _unknown2 = value; }
-    public ByteXor Unknown3 { get => _unknown3; set => _unknown3 = value; }
 //    public StringXor Id_tag2 { get => id_tag2; set => id_tag2 = value; }
 //    public StringXor Next_seal { get => next_seal; set => next_seal = value; }
 //    public StringXor Prev_seal { get => prev_seal; set => prev_seal = value; }
@@ -1312,6 +1315,10 @@ public class SingleSkill : CommonRelated
 //    public UInt16Xor Ss_badge { get => ss_badge; set => ss_badge = value; }
 //    public UInt16Xor Ss_great_badge { get => ss_great_badge; set => ss_great_badge = value; }
     public StringXor Beast_effect_id { get => beast_effect_id; set => beast_effect_id = value; }
+    public ByteXor Random_allowed { get => random_allowed; set => random_allowed = value; }
+    public ByteXor Tt_inherit_base { get => tt_inherit_base; set => tt_inherit_base = value; }
+    public ByteXor Random_mode { get => random_mode; set => random_mode = value; }
+    public ByteXor Unknown_1 { get => unknown_1; set => unknown_1 = value; }
 }
 
 public class GenericText : ExtractionBase
