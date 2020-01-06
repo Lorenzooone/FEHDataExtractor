@@ -18,7 +18,7 @@ namespace FEHDataExtractor
             initializeWeapons();
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1(new GCWorld(), new BaseExtractArchive<SinglePerson>(), new BaseExtractArchive<SingleEnemy>(), new GenericText("", CommonRelated.Common), new BaseExtractArchive<SingleSkill>(), new BaseExtractArchive<Quest_group>(), new Decompress(), new BaseExtractArchive<TempestTrial>(), new Messages(), new WeaponClasses(), new Forging_Bonds()));
+            Application.Run(new Form1(new GCWorld(), new BaseExtractArchive<SinglePerson>(), new BaseExtractArchive<SingleEnemy>(), new GenericText("", CommonRelated.Common), new BaseExtractArchive<SingleSkill>(), new BaseExtractArchive<Quest_group>(), new Decompress(), new BaseExtractArchive<TempestTrial>(), new Messages(), new WeaponClasses(), new BaseExtractArchiveDirect<Forging_Bonds>()));
         }
 
         public static void initializeWeapons()

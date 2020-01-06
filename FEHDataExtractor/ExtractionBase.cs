@@ -1455,3 +1455,45 @@ public class BaseExtractArchive<T> : ExtractionBase where T : ExtractionBase, ne
         return text;
     }
 }
+
+public class BaseExtractArchiveDirect<T> : ExtractionBase where T : ExtractionBase, new()
+{
+    private Int64 numElem;
+    private T[] things;
+
+    public Int64 NumElem { get => numElem; set => numElem = value; }
+    internal T[] Things { get => things; set => things = value; }
+
+    public BaseExtractArchiveDirect()
+    {
+        T tmp = new T();
+        Name = tmp.Name;
+        NumElem = new Int64();
+    }
+    public BaseExtractArchiveDirect(long a, byte[] data) : this()
+    {
+        InsertIn(a, data);
+    }
+    public override void InsertIn(long a, byte[] data)
+    {
+        a = Archive.Ptr_list[Archive.Index];
+        NumElem = ExtractUtils.getLong(offset, data);
+        Archive.Index++;
+        Things = new T[NumElem];
+        for (int i = 0; i < NumElem; i++)
+        {
+            Int64 b = ExtractUtils.getLong(a + (i * 8), data) + offset;
+            Things[i] = new T();
+            Things[i].InsertIn(Archive, b, data);
+        }
+        Archive.Index = Archive.Ptr_list_length;
+    }
+
+    public override string ToString()
+    {
+        String text = "";
+        for (int i = 0; i < NumElem; i++)
+            text += Things[i] + (i == NumElem - 1 ? "" : "\n");
+        return text;
+    }
+}

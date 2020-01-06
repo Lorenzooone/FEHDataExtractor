@@ -40,7 +40,7 @@ namespace FEHDataExtractor
         private UInt32Xor pointsNum; //Xor: 0x62, 0xF6, 0xA1, 0x7A
         private UInt32Xor dailiesNum; //Xor: 0xF4, 0x9D, 0x5F, 0xDD
         private ByteXor[] unknown6; //24 elements
-
+        
         public StringXor Id_tag { get => id_tag; set => id_tag = value; }
         public StringXor Reference { get => reference; set => reference = value; }
         public StringXor Image { get => image; set => image = value; }
@@ -194,6 +194,7 @@ namespace FEHDataExtractor
                     text += string.Format(new System.Globalization.CultureInfo("en-US"), "{0:N1}", get_multiplier((uint)((i * ((int)(MultiplierSize.Value / days))) + j), MultipliersValues.Probs, MultipliersValues.Mults) / 100.0) + "x " + hearts.getString((int)MultipliersCharacters[(i* (MultiplierSize.Value/days)) + j].Value);
                 text += Environment.NewLine;
             }
+            text += "---------------------------------------------------------------------------" + Environment.NewLine;
             return text;
         }
 
