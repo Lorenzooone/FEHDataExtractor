@@ -345,7 +345,7 @@ public class Stats : ExtractionBase
 
 public class Legendary : CommonRelated
 {
-    public static readonly StringsUpdatable LegKind = new StringsUpdatable(new string[] { "Legendary/Mythic", "Duo" });
+    public static readonly StringsUpdatable LegKind = new StringsUpdatable(new string[] { "Legendary/Mythic", "Duo", "Harmonized Duo" });
     private StringXor duo_skill_id;
     private Stats bonuses;
     private ByteXor kind;
