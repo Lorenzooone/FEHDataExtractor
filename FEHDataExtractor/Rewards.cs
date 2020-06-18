@@ -30,6 +30,7 @@ namespace FEHDataExtractor
                 case 0x15:
                 case 0x19:
                 case 0x1A:
+                case 0x27:
                     Thing = new SingleCountDependant();
                     break;
                 case 0x1C:
@@ -82,7 +83,7 @@ namespace FEHDataExtractor
     {
         byte kind;
 
-        public static readonly StringsUpdatable Thing = new StringsUpdatable(new string[]{ "Orb", "Hero", "Hero Feather", "Stamina Potion", "Dueling Crest", "Light's Blessing", "Crystal", "", "", "", "", "", "Badge", "Battle Flag", "Sacred Seal", "Arena Assault Item", "Sacred Coin", "Refining Stone", "Divine Dew", "Arena Medal", "Blessing", "Conquest Lance", "Accessory", "Conversation", "", "Arena Crown", "Heroic Grail", "Aether Stone", "Throne", "Summoning Ticket", "Dragonflower", "Forma Torch" });
+        public static readonly StringsUpdatable Thing = new StringsUpdatable(new string[]{ "Orb", "Hero", "Hero Feather", "Stamina Potion", "Dueling Crest", "Light's Blessing", "Crystal", "", "", "", "", "", "Badge", "Battle Flag", "Sacred Seal", "Arena Assault Item", "Sacred Coin", "Refining Stone", "Divine Dew", "Arena Medal", "Blessing", "Conquest Lance", "Accessory", "Conversation", "", "Arena Crown", "Heroic Grail", "Aether Stone", "Throne", "Summoning Ticket", "Dragonflower", "Forma Torch", "", "", "", "", "", "", "", "Divine Code"});
 
         public override void InsertIn(long a, byte[] data)
         {
@@ -130,7 +131,7 @@ namespace FEHDataExtractor
 
         public override string ToString()
         {
-            String text = "Unknown reward! Kind = " + Kind.ToString("X") + "! Theorical count = " + theoricalCount.ToString();
+            String text = "Unknown reward! Kind = 0x" + Kind.ToString("X") + "! Theorical count = " + theoricalCount.ToString();
             return text;
         }
         
