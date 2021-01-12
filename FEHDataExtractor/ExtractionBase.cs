@@ -914,8 +914,12 @@ public class SingleSkill : CommonRelated
     ByteXor max_lv;
     ByteXor tt_inherit_base;
     ByteXor random_mode;
+    UInt32Xor limit3_id;
+    Int16Xor[] limit3_params;         //2 elements!
     ByteXor range_shape;
     ByteXor target_either;
+    ByteXor distant_counter;
+    ByteXor canto_range;
     // 3 bytes of padding
     //    StringXor id_tag2;
     //    StringXor next_seal;
@@ -929,7 +933,7 @@ public class SingleSkill : CommonRelated
     {
         Name = "Skills";
         ElemXor = new byte[] { 0xAD, 0xE9, 0xDE, 0x4A, 0x07, 0xC7, 0xEC, 0x7F };
-        Size = 320;
+        Size = 328;
         Prerequisites = new StringXor[2];
         Sprites = new StringXor[4];
         Num_id = new UInt32Xor(0x23, 0x3A, 0xA5, 0xC6);
@@ -979,8 +983,14 @@ public class SingleSkill : CommonRelated
         Max_lv = new ByteXor(0x24);
         Tt_inherit_base = new ByteXor(0x19);
         Random_mode = new ByteXor(0xBE);
+        Limit3_id = new UInt32Xor(0x32, 0xB8, 0xBD, 0x0E);
+        Limit3_params = new Int16Xor[2];
+        Limit3_params[0] = new Int16Xor(0x90, 0xA5);
+        Limit3_params[1] = new Int16Xor(0x90, 0xA5);
         Range_shape = new ByteXor(0x5C);
         Target_either = new ByteXor(0xA7);
+        Distant_counter = new ByteXor(0xDB);
+        Canto_range = new ByteXor(0x41);
         /*        Ss_coin = new UInt16Xor(0x40, 0xC5);
                 Ss_badge_type = new UInt16Xor(0x0F, 0xD5);
                 Ss_badge = new UInt16Xor(0xEC, 0x8C);
@@ -1081,8 +1091,13 @@ public class SingleSkill : CommonRelated
         Max_lv.XorValue(data[a + 250]);
         Tt_inherit_base.XorValue(data[a + 251]);
         Random_mode.XorValue(data[a + 252]);
-        Range_shape.XorValue(data[a + 256]);
-        Target_either.XorValue(data[a + 257]);
+        Limit3_id.XorValue((ExtractUtils.getInt(a + 256, data)));
+        Limit3_params[0].XorValue((ExtractUtils.getShort(a + 260, data)));
+        Limit3_params[1].XorValue((ExtractUtils.getShort(a + 262, data)));
+        Range_shape.XorValue(data[a + 264]);
+        Target_either.XorValue(data[a + 265]);
+        Distant_counter.XorValue(data[a + 266]);
+        Canto_range.XorValue(data[a + 267]);
         /*        Id_tag2 = new StringXor(ExtractUtils.getLong(a + 256, data) + offset, data, Common);
                 if (!Id_tag2.Value.Equals(""))
                     Archive.Index++;
@@ -1289,6 +1304,9 @@ public class SingleSkill : CommonRelated
         text += (Random_allowed.Value == 0 && Random_mode.Value == 0) ? "" : ((Random_mode.Value == 0 ? "The skill cannot be used by random units" : Random_mode.Value == 1 ? "The skill may be equipped by any random unit" : "The skill may be equipped by random units who normally own it") + Environment.NewLine);
         text += "Range shape: " + Range_shape.Value + Environment.NewLine;
         text += (Target_either.Value == 1) ? ("Targets both enemies and allies" + Environment.NewLine) : "";
+        text += "Distant counter: " + Distant_counter.Value + Environment.NewLine;
+        text += "Canto Range: " + Canto_range.Value + Environment.NewLine;
+        text += "Canto turn: " + Limit3_params[0] + "~" + Limit3_params[1] + Environment.NewLine;
         /*        if (!Next_seal.Value.Equals(""))
                     text += getStuff(Next_seal, "Next Seal: ") + "Next Seal ID: " + Next_seal + Environment.NewLine;
                 if (!Prev_seal.Value.Equals(""))
@@ -1367,8 +1385,12 @@ public class SingleSkill : CommonRelated
     public ByteXor Random_allowed { get => random_allowed; set => random_allowed = value; }
     public ByteXor Tt_inherit_base { get => tt_inherit_base; set => tt_inherit_base = value; }
     public ByteXor Random_mode { get => random_mode; set => random_mode = value; }
+    public UInt32Xor Limit3_id { get => limit3_id; set => limit3_id = value; }
+    public Int16Xor[] Limit3_params { get => limit3_params; set => limit3_params = value; }
     public ByteXor Range_shape { get => range_shape; set => range_shape = value; }
     public ByteXor Target_either { get => target_either; set => target_either = value; }
+    public ByteXor Distant_counter { get => distant_counter; set => distant_counter = value; }
+    public ByteXor Canto_range { get => canto_range; set => canto_range = value; }
     public Stats Skill_params2 { get => skill_params2; set => skill_params2 = value; }
 }
 
