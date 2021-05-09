@@ -933,7 +933,7 @@ public class SingleSkill : CommonRelated
     {
         Name = "Skills";
         ElemXor = new byte[] { 0xAD, 0xE9, 0xDE, 0x4A, 0x07, 0xC7, 0xEC, 0x7F };
-        Size = 328;
+        Size = 344;
         Prerequisites = new StringXor[2];
         Sprites = new StringXor[4];
         Num_id = new UInt32Xor(0x23, 0x3A, 0xA5, 0xC6);
@@ -1043,7 +1043,7 @@ public class SingleSkill : CommonRelated
         Skill_params = new Stats(a + 96, data);
         Skill_params2 = new Stats(a + 112, data);
         Refine_stats = new Stats(a + 128, data);
-        a += 0x10;
+        a += 0x20;
         Num_id.XorValue((ExtractUtils.getInt(a + 128, data)));
         Sort_id.XorValue((ExtractUtils.getInt(a + 132, data)));
         Icon_id.XorValue((ExtractUtils.getInt(a + 136, data)));
