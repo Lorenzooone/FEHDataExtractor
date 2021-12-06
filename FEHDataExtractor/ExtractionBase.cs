@@ -556,6 +556,7 @@ public class SinglePerson : CharacterRelated
 
     Legendary legendary;
     Dragonflowers dflowers;
+    UInt32Xor version;
     UInt32Xor sort_value;
     UInt32Xor origin;
     ByteXor series;
@@ -572,8 +573,9 @@ public class SinglePerson : CharacterRelated
     {
         Name = "Heroes";
         ElemXor = new byte[] { 0xE1, 0xB9, 0x3A, 0x3C, 0x79, 0xAB, 0x51, 0xDE };
-        Size += 33 + (5 * 8 * PrintSkills.Length);
+        Size += 41 + (5 * 8 * PrintSkills.Length);
         Id_num = new UInt32Xor(0x18, 0x4E, 0x6E, 0x5F);
+        Version = new UInt32Xor(0x62, 0x38, 0x19, 0x2E);
         Sort_value = new UInt32Xor(0x9B, 0x34, 0x80, 0x2A);
         Origin = new UInt32Xor(0x08, 0xB8, 0x64, 0xE6);
         Weapon_type = new ByteXor(6);
@@ -615,6 +617,8 @@ public class SinglePerson : CharacterRelated
         a += 8;
         Timestamp.XorValue((ExtractUtils.getLong(a + 16, data)));
         Id_num.XorValue((ExtractUtils.getInt(a + 24, data)));
+        Version.XorValue((ExtractUtils.getInt(a + 28, data)));
+        a += 4;
         Sort_value.XorValue((ExtractUtils.getInt(a + 28, data)));
         Origin.XorValue((ExtractUtils.getInt(a + 32, data)));
         Weapon_type.XorValue(data[a + 36]);
@@ -626,6 +630,7 @@ public class SinglePerson : CharacterRelated
         Base_vector_id.XorValue(data[a + 42]);
         Refresher.XorValue(data[a + 43]);
         Unknown2.XorValue(data[a + 44]);
+        a += 4;
         Base_stats = new Stats(a + 48, data);
         Base_stats.IncrementAll();
         Growth_rates = new Stats(a + 64, data);
@@ -658,6 +663,7 @@ public class SinglePerson : CharacterRelated
         text += "Timestamp: ";
         text += Timestamp.Value < 0 ? "Not available" + Environment.NewLine : DateTimeOffset.FromUnixTimeSeconds(Timestamp.Value).DateTime.ToLocalTime() + Environment.NewLine;
         text += "ID: " + Id_num + Environment.NewLine;
+        text += "Version: " + Version.Value + Environment.NewLine;
         text += "Sort Value: " + Sort_value + Environment.NewLine;
         text += "Origin: " + Origin.Value + Environment.NewLine;
         text += "Weapon: " + WeaponNames.getString(Weapon_type.Value) + Environment.NewLine;
@@ -703,6 +709,7 @@ public class SinglePerson : CharacterRelated
     public StringXor[,] Skills { get => skills; set => skills = value; }
     public UInt32Xor Origin { get => origin; set => origin = value; }
     public Dragonflowers Dflowers { get => dflowers; set => dflowers = value; }
+    public UInt32Xor Version { get => version; set => version = value; }
 }
 
 public class GCArea:GCRelated
