@@ -34,9 +34,6 @@
             this.closeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.loadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.messagesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.messagesJpnToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.Extract = new System.Windows.Forms.Button();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
@@ -50,8 +47,7 @@
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
-            this.helpToolStripMenuItem,
-            this.loadToolStripMenuItem});
+            this.helpToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Padding = new System.Windows.Forms.Padding(7, 2, 0, 2);
@@ -98,29 +94,6 @@
             this.aboutToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.aboutToolStripMenuItem.Text = "About";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
-            // 
-            // loadToolStripMenuItem
-            // 
-            this.loadToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.messagesToolStripMenuItem,
-            this.messagesJpnToolStripMenuItem});
-            this.loadToolStripMenuItem.Name = "loadToolStripMenuItem";
-            this.loadToolStripMenuItem.Size = new System.Drawing.Size(45, 20);
-            this.loadToolStripMenuItem.Text = "Load";
-            // 
-            // messagesToolStripMenuItem
-            // 
-            this.messagesToolStripMenuItem.Name = "messagesToolStripMenuItem";
-            this.messagesToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
-            this.messagesToolStripMenuItem.Text = "Messages";
-            this.messagesToolStripMenuItem.Click += new System.EventHandler(this.messagesToolStripMenuItem_Click);
-            // 
-            // messagesJpnToolStripMenuItem
-            // 
-            this.messagesJpnToolStripMenuItem.Name = "messagesJpnToolStripMenuItem";
-            this.messagesJpnToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
-            this.messagesJpnToolStripMenuItem.Text = "Messages Jpn";
-            this.messagesJpnToolStripMenuItem.Click += new System.EventHandler(this.messagesJpnToolStripMenuItem_Click);
             // 
             // Extract
             // 
@@ -205,11 +178,8 @@
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
         private System.Windows.Forms.ComboBox comboBox1;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
-        private System.Windows.Forms.ToolStripMenuItem loadToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem messagesToolStripMenuItem;
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog1;
         private System.Windows.Forms.Button ExtractKor;
-        private System.Windows.Forms.ToolStripMenuItem messagesJpnToolStripMenuItem;
         private System.Windows.Forms.ListBox FileListBox;
     }
 }
