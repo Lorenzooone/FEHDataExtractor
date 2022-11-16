@@ -10,11 +10,11 @@ public abstract class Xor
     public static int offset = 0x20;
 
     public Xor(params byte[] A)
-	{
+    {
         XorData = new byte[A.Length];
         for (int i = 0; i < A.Length; i++)
             XorData[i] = A[i];
-	}
+    }
 
     public byte getDataXorred(byte data, int index)
     {
@@ -88,7 +88,7 @@ public class Int32Xor : Xor
         return Value.ToString();
     }
 
-    public Int32 Value { get => value; set => this.value =value; }
+    public Int32 Value { get => value; set => this.value = value; }
 }
 
 public class ByteXor : Xor
@@ -183,12 +183,38 @@ public class LoadMessages
                 {
                     tmp.InsertIn(a, offset, data);
                 }
+                /*
                 string path2 = path.Remove(path.Length - 6, 6) + "txt";
                 string output = tmp.ToString();
                 File.WriteAllText(path2, output);
+                */
             }
         }
     }
+
+    public static void openFolderJp(string path)
+    {
+        if (Directory.Exists(path))
+        {
+            foreach (string p in (new DirectoryInfo(path)).GetFiles().Select(f => f.FullName))
+                openFolderJp(p);
+            foreach (string p in (new DirectoryInfo(path)).GetDirectories().Select(f => f.FullName))
+                openFolderJp(p);
+        }
+        else if (File.Exists(path) && Path.GetExtension(path).ToLower().Equals(".lz"))
+        {
+            byte[] data = Decompression.Open(path);
+            if (data != null)
+            {
+                HSDARC a = new HSDARC(0, data);
+                while (a.Ptr_list_length - a.NegateIndex > a.Index)
+                {
+                    tmp.InsertInJp(a, offset, data);
+                }
+            }
+        }
+    }
+
 }
 
 public class ExtractUtils
@@ -208,13 +234,35 @@ public class ExtractUtils
         return (long)data[a] + ((long)data[a + 1] << 8) + ((long)data[a + 2] << 16) + ((long)data[a + 3] << 24) + ((long)data[a + 4] << 32) + ((long)data[a + 5] << 40) + ((long)data[a + 6] << 48) + ((long)data[a + 7] << 56);
     }
 
-    public static String BitmaskConvertToString(UInt32 value, StringsUpdatable Names) {
+    public static String BitmaskConvertToString(UInt32 value, StringsUpdatable Names)
+    {
         String text = "";
         int tmp = 1;
         bool start = true;
         for (int i = 0; i < Names.Length; i++)
         {
             if (((value & tmp) >> i) == 1)
+            {
+                if (!start)
+                    text += ", " + Names.getString(i);
+                else
+                    text += " " + Names.getString(i);
+                start = false;
+            }
+            tmp = tmp << 1;
+        }
+        return text;
+    }
+
+    public static String BitmaskConvertToString(UInt32 value, StringsUpdatable Names, bool zero)
+    {
+        String text = "";
+        int tmp = 1;
+        bool start = true;
+        int mask = zero ? 1 : 0;
+        for (int i = 0; i < Names.Length; i++)
+        {
+            if (((value & tmp) >> i) == mask)
             {
                 if (!start)
                     text += ", " + Names.getString(i);
@@ -241,6 +289,7 @@ public class ExtractUtils
 public class StringXor : Xor
 {
     private String value;
+    List<byte> byte_value = new List<byte>();
 
     public StringXor(long a, byte[] data, params byte[] A) : base(A)
     {
@@ -256,12 +305,18 @@ public class StringXor : Xor
                     tmp.Add(data[a + i]);
             }
             Value = Encoding.UTF8.GetString(tmp.ToArray()).Replace("\n", "\\n").Replace("\r", "\\r");
+            byte_value = tmp;
         }
     }
 
     override public String ToString()
     {
         return Value;
+    }
+
+    public List<byte> ToByte()
+    {
+        return byte_value;
     }
 
     public String Value { get => value; set => this.value = value; }
