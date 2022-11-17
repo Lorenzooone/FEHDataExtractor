@@ -895,7 +895,7 @@ public class SinglePerson : CharacterRelated
             text += "\"element\":" + Legendary.Element + ",";
             text += "\"bst\":" + Legendary.Bst + ",";
             text += "\"pair_up\":" + (Legendary.Is_duel.Value != 0 ? "true" : "false") + ",";
-            text += "\"ae_extra\":" + (Legendary.Is_Extraslot.Value != 0 ? "true" : "false") + ",";
+            text += "\"ae_extra\":" + (Legendary.Is_Extraslot.Value != 0 ? "true" : "false");
 
             text += "},";
         }
