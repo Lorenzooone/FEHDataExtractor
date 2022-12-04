@@ -117,11 +117,12 @@ namespace FEHDataExtractor
             Range.XorValue(data[a + 37]);
             Unknown1.XorValue(data[a + 38]);
             Equip_group.XorValue(data[a + 39]);
-            Res_damage.XorValue(data[a + 40]);
-            Is_staff.XorValue(data[a + 41]);
-            Is_dagger.XorValue(data[a + 42]);
-            Is_breath.XorValue(data[a + 43]);
-            Is_beast.XorValue(data[a + 44]);
+            //40 : Unknown2
+            Res_damage.XorValue(data[a + 41]);
+            Is_staff.XorValue(data[a + 42]);
+            Is_dagger.XorValue(data[a + 43]);
+            Is_breath.XorValue(data[a + 44]);
+            Is_beast.XorValue(data[a + 45]);
         }
         public override string ToString()
         {

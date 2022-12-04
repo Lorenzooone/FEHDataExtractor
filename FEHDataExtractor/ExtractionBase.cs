@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Diagnostics;
+using static System.Net.Mime.MediaTypeNames;
 
 
 //Make the program less crash-happy when things get updated
@@ -389,7 +390,15 @@ public class Stats : ExtractionBase
 
     public override string ToString_json()
     {
-        throw new NotImplementedException();
+        String text = "{ ";
+
+        text += "\"hp\":" + Hp + ",";
+        text += "\"atk\":" + Atk + ",";
+        text += "\"spd\":" + Spd + ",";
+        text += "\"def\":" + Def + ",";
+        text += "\"res\":" + Res + "}";
+
+        return text;
     }
 
     public void IncrementAll()
@@ -454,7 +463,22 @@ public class Legendary : CommonRelated
 
     override public String ToString_json()
     {
-        return ToString();
+        String text = "";
+        text += "{\"duo_skill_id\":\"" + Duo_skill_id + "\",";
+
+        text += "\"bonus_effect\": ";
+        text += Bonuses.ToString_json();
+        text += ",";
+
+        text += "\"kind\":" + Kind + ",";
+        text += "\"element\":" + Element + ",";
+        text += "\"bst\":" + Bst + ",";
+        text += "\"pair_up\":" + (Is_duel.Value != 0 ? "true" : "false") + ",";
+        text += "\"ae_extra\":" + (Is_Extraslot.Value != 0 ? "true" : "false");
+
+        text += "}";
+
+        return text;
     }
 
     public override void InsertIn(long a, byte[] data)
@@ -879,25 +903,9 @@ public class SinglePerson : CharacterRelated
         text += "\"face_name2\":\"" + Face_name2 + "\",";
         if (Legendary.Bonuses != null)
         {
-            text += "\"legendary\": {";
-
-            text += "\"duo_skill_id\":\"" + Legendary.Duo_skill_id + "\",";
-
-            text += "\"bonus_effect\": {";
-            text += "\"hp\":" + Legendary.Bonuses.Hp + ",";
-            text += "\"atk\":" + Legendary.Bonuses.Atk + ",";
-            text += "\"spd\":" + Legendary.Bonuses.Spd + ",";
-            text += "\"def\":" + Legendary.Bonuses.Def + ",";
-            text += "\"res\":" + Legendary.Bonuses.Res + "";
-            text += "},";
-
-            text += "\"kind\":" + Legendary.Kind + ",";
-            text += "\"element\":" + Legendary.Element + ",";
-            text += "\"bst\":" + Legendary.Bst + ",";
-            text += "\"pair_up\":" + (Legendary.Is_duel.Value != 0 ? "true" : "false") + ",";
-            text += "\"ae_extra\":" + (Legendary.Is_Extraslot.Value != 0 ? "true" : "false");
-
-            text += "},";
+            text += "\"legendary\": ";
+            text += Legendary.ToString_json();
+            text += ",";
         }
         else
         {
@@ -922,21 +930,13 @@ public class SinglePerson : CharacterRelated
         text += "\"base_vactor_id\":" + Base_vector_id + ",";
         text += "\"refresher\":" + (Refresher.Value != 0 ? "true" : "false") + ",";
 
-        text += "\"base_stats\": {";
-        text += "\"hp\":" + Base_stats.Hp + ",";
-        text += "\"atk\":" + Base_stats.Atk + ",";
-        text += "\"spd\":" + Base_stats.Spd + ",";
-        text += "\"def\":" + Base_stats.Def + ",";
-        text += "\"res\":" + Base_stats.Res + "";
-        text += "},";
+        text += "\"base_stats\": ";
+        text += Base_stats.ToString_json();
+        text += ",";
 
-        text += "\"growth_rates\": {";
-        text += "\"hp\":" + Growth_rates.Hp + ",";
-        text += "\"atk\":" + Growth_rates.Atk + ",";
-        text += "\"spd\":" + Growth_rates.Spd + ",";
-        text += "\"def\":" + Growth_rates.Def + ",";
-        text += "\"res\":" + Growth_rates.Res + "";
-        text += "},";
+        text += "\"growth_rates\": ";
+        text += Growth_rates.ToString_json();
+        text += ",";
 
         text += "\"skills\":[";
 
@@ -1672,54 +1672,30 @@ public class SingleSkill : CommonRelated
         }
         text += "],";
 
-        text += "\"stats\": {";
-        text += "\"hp\":" + Statistics.Hp + ",";
-        text += "\"atk\":" + Statistics.Atk + ",";
-        text += "\"spd\":" + Statistics.Spd + ",";
-        text += "\"def\":" + Statistics.Def + ",";
-        text += "\"res\":" + Statistics.Res + "";
-        text += "},";
+        text += "\"stats\":";
+        text += Statistics.ToString_json();
+        text += ",";
 
-        text += "\"class_params\": {";
-        text += "\"hp\":" + Class_params.Hp + ",";
-        text += "\"atk\":" + Class_params.Atk + ",";
-        text += "\"spd\":" + Class_params.Spd + ",";
-        text += "\"def\":" + Class_params.Def + ",";
-        text += "\"res\":" + Class_params.Res + "";
-        text += "},";
+        text += "\"class_params\": ";
+        text += Class_params.ToString_json();
+        text += ",";
 
-        text += "\"combat_buffs\": {";
-        text += "\"hp\":" + Skill_params.Hp + ",";
-        text += "\"atk\":" + Skill_params.Atk + ",";
-        text += "\"spd\":" + Skill_params.Spd + ",";
-        text += "\"def\":" + Skill_params.Def + ",";
-        text += "\"res\":" + Skill_params.Res + "";
-        text += "},";
+        text += "\"combat_buffs\": ";
+        text += Skill_params.ToString_json();
+        text += ",";
 
 
-        text += "\"skill_params\": {";
-        text += "\"hp\":" + Skill_params2.Hp + ",";
-        text += "\"atk\":" + Skill_params2.Atk + ",";
-        text += "\"spd\":" + Skill_params2.Spd + ",";
-        text += "\"def\":" + Skill_params2.Def + ",";
-        text += "\"res\":" + Skill_params2.Res + "";
-        text += "},";
+        text += "\"skill_params\": ";
+        text += Skill_params2.ToString_json();
+        text += ",";
 
-        text += "\"skill_params2\": {";
-        text += "\"hp\":" + New_stat_1.Hp + ",";
-        text += "\"atk\":" + New_stat_1.Atk + ",";
-        text += "\"spd\":" + New_stat_1.Spd + ",";
-        text += "\"def\":" + New_stat_1.Def + ",";
-        text += "\"res\":" + New_stat_1.Res + "";
-        text += "},";
+        text += "\"skill_params2\": ";
+        text += New_stat_1.ToString_json();
+        text += ",";
 
-        text += "\"refine_stats\": {";
-        text += "\"hp\":" + Refine_stats.Hp + ",";
-        text += "\"atk\":" + Refine_stats.Atk + ",";
-        text += "\"spd\":" + Refine_stats.Spd + ",";
-        text += "\"def\":" + Refine_stats.Def + ",";
-        text += "\"res\":" + Refine_stats.Res + "";
-        text += "},";
+        text += "\"refine_stats\": ";
+        text += Refine_stats.ToString_json();
+        text += ",";
 
         text += "\"id_num\":" + Num_id + ",";
         text += "\"sort_id\":" + Sort_id + ",";
