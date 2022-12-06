@@ -554,6 +554,11 @@ public class SingleEnemy : CharacterRelated
     ByteXor is_boss;
     ByteXor refresher;
     ByteXor is_enemy;
+    ByteXor is_npc;
+    ByteXor byte_29;
+    ByteXor byte_30;
+    ByteXor byte_31;
+
 
     public ByteXor Is_boss { get => is_boss; set => is_boss = value; }
     public ByteXor Spawnable_Enemy { get => _spawnable_Enemy; set => _spawnable_Enemy = value; }
@@ -563,6 +568,10 @@ public class SingleEnemy : CharacterRelated
     public StringXor UniqueSpecial { get => uniqueSpecial; set => uniqueSpecial = value; }
     public ByteXor Refresher { get => refresher; set => refresher = value; }
     public ByteXor Is_enemy { get => is_enemy; set => is_enemy = value; }
+    public ByteXor Is_npc { get => is_npc; set => is_npc = value; }
+    public ByteXor Byte_29 { get => byte_29; set => byte_29 = value; }
+    public ByteXor Byte_30 { get => byte_30; set => byte_30 = value; }
+    public ByteXor Byte_31 { get => byte_31; set => byte_31 = value; }
 
     public SingleEnemy() : base()
     {
@@ -577,6 +586,10 @@ public class SingleEnemy : CharacterRelated
         Is_boss = new ByteXor(0x6A);//-0->아님, 1-> 맞음
         Refresher = new ByteXor(0x2A);
         Is_enemy = new ByteXor(0X13);
+        Is_npc = new ByteXor(0XF7);
+        Byte_29 = new ByteXor(0X4F);
+        Byte_30 = new ByteXor(0X15);
+        Byte_31 = new ByteXor(0X6D);
     }
 
     public SingleEnemy(long a, byte[] data) : this()
@@ -590,10 +603,11 @@ public class SingleEnemy : CharacterRelated
         Archive.Index++;
         Roman = new StringXor(ExtractUtils.getLong(a + 8, data) + offset, data, Common);
         Archive.Index++;
+        /*
         if (Roman.Value.Equals("NONE"))
         {
             return;
-        }
+        }*/
         Face_name = new StringXor(ExtractUtils.getLong(a + 16, data) + offset, data, Common);
         Archive.Index++;
         a += 24;
@@ -620,6 +634,11 @@ public class SingleEnemy : CharacterRelated
         Id_num.XorValue((ExtractUtils.getInt(a + 24, data)));
         //28~31 새로운거 생김
 
+        Is_npc.XorValue(data[a + 28]);
+        Byte_29.XorValue(data[a + 29]);
+        Byte_30.XorValue(data[a + 30]);
+        Byte_31.XorValue(data[a + 31]);
+
         Weapon_type.XorValue(data[a + 32]);
         Tome_class.XorValue(data[a + 33]);
         Move_type.XorValue(data[a + 34]);
@@ -628,7 +647,6 @@ public class SingleEnemy : CharacterRelated
         Refresher.XorValue(data[a + 37]);
         Is_enemy.XorValue(data[a + 38]);
         Base_stats = new Stats(a + 40, data);
-        Base_stats.IncrementAll();
         Growth_rates = new Stats(a + 56, data);
     }
 
@@ -650,6 +668,7 @@ public class SingleEnemy : CharacterRelated
         text += "Timestamp: ";
         text += Timestamp.Value < 0 ? "Not available" + Environment.NewLine : DateTimeOffset.FromUnixTimeSeconds(Timestamp.Value).DateTime.ToLocalTime() + Environment.NewLine;
         text += "ID: " + Id_num + Environment.NewLine;
+        text += Is_npc.Value == 0 ? "Is_npc : false" + Environment.NewLine : "Is_npc : true" + Environment.NewLine;
         text += "Weapon: " + WeaponNames.getString(Weapon_type.Value) + Environment.NewLine;
         text += "Tome Element: " + Tome_Elem.getString(Tome_class.Value) + Environment.NewLine;
         text += "Movement Type: " + Movement.getString(Move_type.Value) + Environment.NewLine;
@@ -674,8 +693,8 @@ public class SingleEnemy : CharacterRelated
 
         text += "\"id_tag\":\"" + Id_tag + "\",";
         text += "\"roman\":\"" + Roman + "\",";
-        text += "\"face_name\":\"" + Face_name + "\",";
-        text += "\"face_name2\":\"" + Face_name2 + "\",";
+        text += "\"face_name\":" + (Roman.Value.Equals("NONE") ? "null" : "\"" + Face_name + "\"") + ",";
+        text += "\"face_name2\":" + (Roman.Value.Equals("NONE") ? "null" : "\"" + Face_name2 + "\"") + ",";
         text += "\"top_weapon\":" + (TopWeapon.Value.Equals("") ? "null" : "\"" + TopWeapon + "\"") + ",";
         text += "\"unique_assist1\":" + (UniqueAssist.Value.Equals("") ? "null" : "\"" + UniqueAssist + "\"") + ",";
         text += "\"unique_assist2\":" + (UniqueAssist2.Value.Equals("") ? "null" : "\"" + UniqueAssist2 + "\"") + ",";
@@ -684,6 +703,7 @@ public class SingleEnemy : CharacterRelated
         text += "\"timestamp\":" + (Timestamp.Value < 0 ? "null" : Timestamp.Value.ToString()) + ",";
 
         text += "\"id_num\":" + Id_num + ",";
+        text += "\"is_npc\":" + (Is_npc.Value == 1 ? "true" : "false") + ","; ;
         text += "\"weapon_type\":" + Weapon_type + ",";
         text += "\"tome_class\":" + Tome_class + ",";
         text += "\"move_type\":" + Move_type + ",";
