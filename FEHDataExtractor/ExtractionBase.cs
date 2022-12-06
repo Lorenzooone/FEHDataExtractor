@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Diagnostics;
+using static System.Net.Mime.MediaTypeNames;
 
 
 //Make the program less crash-happy when things get updated
@@ -389,7 +390,15 @@ public class Stats : ExtractionBase
 
     public override string ToString_json()
     {
-        throw new NotImplementedException();
+        String text = "{ ";
+
+        text += "\"hp\":" + Hp + ",";
+        text += "\"atk\":" + Atk + ",";
+        text += "\"spd\":" + Spd + ",";
+        text += "\"def\":" + Def + ",";
+        text += "\"res\":" + Res + "}";
+
+        return text;
     }
 
     public void IncrementAll()
@@ -454,7 +463,22 @@ public class Legendary : CommonRelated
 
     override public String ToString_json()
     {
-        return ToString();
+        String text = "";
+        text += "{\"duo_skill_id\":\"" + Duo_skill_id + "\",";
+
+        text += "\"bonus_effect\": ";
+        text += Bonuses.ToString_json();
+        text += ",";
+
+        text += "\"kind\":" + Kind + ",";
+        text += "\"element\":" + Element + ",";
+        text += "\"bst\":" + Bst + ",";
+        text += "\"pair_up\":" + (Is_duel.Value != 0 ? "true" : "false") + ",";
+        text += "\"ae_extra\":" + (Is_Extraslot.Value != 0 ? "true" : "false");
+
+        text += "}";
+
+        return text;
     }
 
     public override void InsertIn(long a, byte[] data)
@@ -530,6 +554,11 @@ public class SingleEnemy : CharacterRelated
     ByteXor is_boss;
     ByteXor refresher;
     ByteXor is_enemy;
+    ByteXor is_npc;
+    ByteXor byte_29;
+    ByteXor byte_30;
+    ByteXor byte_31;
+
 
     public ByteXor Is_boss { get => is_boss; set => is_boss = value; }
     public ByteXor Spawnable_Enemy { get => _spawnable_Enemy; set => _spawnable_Enemy = value; }
@@ -539,6 +568,10 @@ public class SingleEnemy : CharacterRelated
     public StringXor UniqueSpecial { get => uniqueSpecial; set => uniqueSpecial = value; }
     public ByteXor Refresher { get => refresher; set => refresher = value; }
     public ByteXor Is_enemy { get => is_enemy; set => is_enemy = value; }
+    public ByteXor Is_npc { get => is_npc; set => is_npc = value; }
+    public ByteXor Byte_29 { get => byte_29; set => byte_29 = value; }
+    public ByteXor Byte_30 { get => byte_30; set => byte_30 = value; }
+    public ByteXor Byte_31 { get => byte_31; set => byte_31 = value; }
 
     public SingleEnemy() : base()
     {
@@ -553,6 +586,10 @@ public class SingleEnemy : CharacterRelated
         Is_boss = new ByteXor(0x6A);//-0->아님, 1-> 맞음
         Refresher = new ByteXor(0x2A);
         Is_enemy = new ByteXor(0X13);
+        Is_npc = new ByteXor(0XF7);
+        Byte_29 = new ByteXor(0X4F);
+        Byte_30 = new ByteXor(0X15);
+        Byte_31 = new ByteXor(0X6D);
     }
 
     public SingleEnemy(long a, byte[] data) : this()
@@ -566,10 +603,11 @@ public class SingleEnemy : CharacterRelated
         Archive.Index++;
         Roman = new StringXor(ExtractUtils.getLong(a + 8, data) + offset, data, Common);
         Archive.Index++;
+        /*
         if (Roman.Value.Equals("NONE"))
         {
             return;
-        }
+        }*/
         Face_name = new StringXor(ExtractUtils.getLong(a + 16, data) + offset, data, Common);
         Archive.Index++;
         a += 24;
@@ -596,6 +634,11 @@ public class SingleEnemy : CharacterRelated
         Id_num.XorValue((ExtractUtils.getInt(a + 24, data)));
         //28~31 새로운거 생김
 
+        Is_npc.XorValue(data[a + 28]);
+        Byte_29.XorValue(data[a + 29]);
+        Byte_30.XorValue(data[a + 30]);
+        Byte_31.XorValue(data[a + 31]);
+
         Weapon_type.XorValue(data[a + 32]);
         Tome_class.XorValue(data[a + 33]);
         Move_type.XorValue(data[a + 34]);
@@ -604,7 +647,6 @@ public class SingleEnemy : CharacterRelated
         Refresher.XorValue(data[a + 37]);
         Is_enemy.XorValue(data[a + 38]);
         Base_stats = new Stats(a + 40, data);
-        Base_stats.IncrementAll();
         Growth_rates = new Stats(a + 56, data);
     }
 
@@ -626,6 +668,7 @@ public class SingleEnemy : CharacterRelated
         text += "Timestamp: ";
         text += Timestamp.Value < 0 ? "Not available" + Environment.NewLine : DateTimeOffset.FromUnixTimeSeconds(Timestamp.Value).DateTime.ToLocalTime() + Environment.NewLine;
         text += "ID: " + Id_num + Environment.NewLine;
+        text += Is_npc.Value == 0 ? "Is_npc : false" + Environment.NewLine : "Is_npc : true" + Environment.NewLine;
         text += "Weapon: " + WeaponNames.getString(Weapon_type.Value) + Environment.NewLine;
         text += "Tome Element: " + Tome_Elem.getString(Tome_class.Value) + Environment.NewLine;
         text += "Movement Type: " + Movement.getString(Move_type.Value) + Environment.NewLine;
@@ -650,8 +693,8 @@ public class SingleEnemy : CharacterRelated
 
         text += "\"id_tag\":\"" + Id_tag + "\",";
         text += "\"roman\":\"" + Roman + "\",";
-        text += "\"face_name\":\"" + Face_name + "\",";
-        text += "\"face_name2\":\"" + Face_name2 + "\",";
+        text += "\"face_name\":" + (Roman.Value.Equals("NONE") ? "null" : "\"" + Face_name + "\"") + ",";
+        text += "\"face_name2\":" + (Roman.Value.Equals("NONE") ? "null" : "\"" + Face_name2 + "\"") + ",";
         text += "\"top_weapon\":" + (TopWeapon.Value.Equals("") ? "null" : "\"" + TopWeapon + "\"") + ",";
         text += "\"unique_assist1\":" + (UniqueAssist.Value.Equals("") ? "null" : "\"" + UniqueAssist + "\"") + ",";
         text += "\"unique_assist2\":" + (UniqueAssist2.Value.Equals("") ? "null" : "\"" + UniqueAssist2 + "\"") + ",";
@@ -660,6 +703,7 @@ public class SingleEnemy : CharacterRelated
         text += "\"timestamp\":" + (Timestamp.Value < 0 ? "null" : Timestamp.Value.ToString()) + ",";
 
         text += "\"id_num\":" + Id_num + ",";
+        text += "\"is_npc\":" + (Is_npc.Value == 1 ? "true" : "false") + ","; ;
         text += "\"weapon_type\":" + Weapon_type + ",";
         text += "\"tome_class\":" + Tome_class + ",";
         text += "\"move_type\":" + Move_type + ",";
@@ -879,25 +923,9 @@ public class SinglePerson : CharacterRelated
         text += "\"face_name2\":\"" + Face_name2 + "\",";
         if (Legendary.Bonuses != null)
         {
-            text += "\"legendary\": {";
-
-            text += "\"duo_skill_id\":\"" + Legendary.Duo_skill_id + "\",";
-
-            text += "\"bonus_effect\": {";
-            text += "\"hp\":" + Legendary.Bonuses.Hp + ",";
-            text += "\"atk\":" + Legendary.Bonuses.Atk + ",";
-            text += "\"spd\":" + Legendary.Bonuses.Spd + ",";
-            text += "\"def\":" + Legendary.Bonuses.Def + ",";
-            text += "\"res\":" + Legendary.Bonuses.Res + "";
-            text += "},";
-
-            text += "\"kind\":" + Legendary.Kind + ",";
-            text += "\"element\":" + Legendary.Element + ",";
-            text += "\"bst\":" + Legendary.Bst + ",";
-            text += "\"pair_up\":" + (Legendary.Is_duel.Value != 0 ? "true" : "false") + ",";
-            text += "\"ae_extra\":" + (Legendary.Is_Extraslot.Value != 0 ? "true" : "false");
-
-            text += "},";
+            text += "\"legendary\": ";
+            text += Legendary.ToString_json();
+            text += ",";
         }
         else
         {
@@ -922,21 +950,13 @@ public class SinglePerson : CharacterRelated
         text += "\"base_vactor_id\":" + Base_vector_id + ",";
         text += "\"refresher\":" + (Refresher.Value != 0 ? "true" : "false") + ",";
 
-        text += "\"base_stats\": {";
-        text += "\"hp\":" + Base_stats.Hp + ",";
-        text += "\"atk\":" + Base_stats.Atk + ",";
-        text += "\"spd\":" + Base_stats.Spd + ",";
-        text += "\"def\":" + Base_stats.Def + ",";
-        text += "\"res\":" + Base_stats.Res + "";
-        text += "},";
+        text += "\"base_stats\": ";
+        text += Base_stats.ToString_json();
+        text += ",";
 
-        text += "\"growth_rates\": {";
-        text += "\"hp\":" + Growth_rates.Hp + ",";
-        text += "\"atk\":" + Growth_rates.Atk + ",";
-        text += "\"spd\":" + Growth_rates.Spd + ",";
-        text += "\"def\":" + Growth_rates.Def + ",";
-        text += "\"res\":" + Growth_rates.Res + "";
-        text += "},";
+        text += "\"growth_rates\": ";
+        text += Growth_rates.ToString_json();
+        text += ",";
 
         text += "\"skills\":[";
 
@@ -1672,54 +1692,30 @@ public class SingleSkill : CommonRelated
         }
         text += "],";
 
-        text += "\"stats\": {";
-        text += "\"hp\":" + Statistics.Hp + ",";
-        text += "\"atk\":" + Statistics.Atk + ",";
-        text += "\"spd\":" + Statistics.Spd + ",";
-        text += "\"def\":" + Statistics.Def + ",";
-        text += "\"res\":" + Statistics.Res + "";
-        text += "},";
+        text += "\"stats\":";
+        text += Statistics.ToString_json();
+        text += ",";
 
-        text += "\"class_params\": {";
-        text += "\"hp\":" + Class_params.Hp + ",";
-        text += "\"atk\":" + Class_params.Atk + ",";
-        text += "\"spd\":" + Class_params.Spd + ",";
-        text += "\"def\":" + Class_params.Def + ",";
-        text += "\"res\":" + Class_params.Res + "";
-        text += "},";
+        text += "\"class_params\": ";
+        text += Class_params.ToString_json();
+        text += ",";
 
-        text += "\"combat_buffs\": {";
-        text += "\"hp\":" + Skill_params.Hp + ",";
-        text += "\"atk\":" + Skill_params.Atk + ",";
-        text += "\"spd\":" + Skill_params.Spd + ",";
-        text += "\"def\":" + Skill_params.Def + ",";
-        text += "\"res\":" + Skill_params.Res + "";
-        text += "},";
+        text += "\"combat_buffs\": ";
+        text += Skill_params.ToString_json();
+        text += ",";
 
 
-        text += "\"skill_params\": {";
-        text += "\"hp\":" + Skill_params2.Hp + ",";
-        text += "\"atk\":" + Skill_params2.Atk + ",";
-        text += "\"spd\":" + Skill_params2.Spd + ",";
-        text += "\"def\":" + Skill_params2.Def + ",";
-        text += "\"res\":" + Skill_params2.Res + "";
-        text += "},";
+        text += "\"skill_params\": ";
+        text += Skill_params2.ToString_json();
+        text += ",";
 
-        text += "\"skill_params2\": {";
-        text += "\"hp\":" + New_stat_1.Hp + ",";
-        text += "\"atk\":" + New_stat_1.Atk + ",";
-        text += "\"spd\":" + New_stat_1.Spd + ",";
-        text += "\"def\":" + New_stat_1.Def + ",";
-        text += "\"res\":" + New_stat_1.Res + "";
-        text += "},";
+        text += "\"skill_params2\": ";
+        text += New_stat_1.ToString_json();
+        text += ",";
 
-        text += "\"refine_stats\": {";
-        text += "\"hp\":" + Refine_stats.Hp + ",";
-        text += "\"atk\":" + Refine_stats.Atk + ",";
-        text += "\"spd\":" + Refine_stats.Spd + ",";
-        text += "\"def\":" + Refine_stats.Def + ",";
-        text += "\"res\":" + Refine_stats.Res + "";
-        text += "},";
+        text += "\"refine_stats\": ";
+        text += Refine_stats.ToString_json();
+        text += ",";
 
         text += "\"id_num\":" + Num_id + ",";
         text += "\"sort_id\":" + Sort_id + ",";
