@@ -2026,7 +2026,7 @@ public class SingleCaptainSkill : CommonRelated
 
     public SingleCaptainSkill()
     {
-        Name = "CaptainSkill";
+        Name = "Captain Skill";
         ElemXor = new byte[] { 0x56, 0xEC, 0xBC, 0x6E, 0xED, 0x37, 0x70, 0xB7 };//데이터 개수 세는거
         Size = 88;
         Param1_1 = new Int16Xor(0x0E, 0xF4);
@@ -2134,7 +2134,237 @@ public class SingleCaptainSkill : CommonRelated
     public Int32Xor Param3_3 { get => param3_3; set => param3_3 = value; }
 
 }
+public class SingleWeaponRefine : CommonRelated
+{
 
+    StringXor originalSid;
+    StringXor refinedSid;
+
+    UInt16Xor resType1;
+    UInt16Xor count1;
+
+    UInt16Xor resType2;
+    UInt16Xor count2;
+
+
+    UInt16Xor resType3;
+    UInt16Xor count3;
+
+
+
+
+
+
+    public SingleWeaponRefine()
+    {
+        Name = "Weapon Refine";
+        ElemXor = new byte[] { 0x73, 0xFD, 0x2C, 0x43, 0x00, 0x2C, 0x16, 0x45 };//데이터 개수 세는거
+        Size = 32;
+
+        ResType1 = new UInt16Xor(0x9C, 0x43);
+        Count1 = new UInt16Xor(0x44, 0x74);
+
+        ResType2 = new UInt16Xor(0x9C, 0x43);
+        Count2 = new UInt16Xor(0x44, 0x74);
+
+        ResType3 = new UInt16Xor(0x9C, 0x43);
+        Count3 = new UInt16Xor(0x44, 0x74);
+
+
+    }
+
+    public SingleWeaponRefine(long a, byte[] data) : this()
+    {
+        InsertIn(a, data);
+    }
+
+    public override void InsertIn(long a, byte[] data)
+    {
+        OriginSid = new StringXor(ExtractUtils.getLong(a, data) + offset, data, Common);
+        Archive.Index++;
+        RefinedSid = new StringXor(ExtractUtils.getLong(a + 8, data) + offset, data, Common);
+        Archive.Index++;
+
+        ResType1.XorValue(ExtractUtils.getShort(a + 16, data));
+        Count1.XorValue(ExtractUtils.getShort(a + 18, data));
+        ResType2.XorValue(ExtractUtils.getShort(a + 20, data));
+        Count2.XorValue(ExtractUtils.getShort(a + 22, data));
+        ResType3.XorValue(ExtractUtils.getShort(a + 24, data));
+        Count3.XorValue(ExtractUtils.getShort(a + 26, data));
+    }
+
+    public override string ToString()
+    {
+        String text = "";
+
+
+        text += "Origin Skill Id : " + OriginSid.Value + Environment.NewLine;
+        text += "Refined Skill Id : " + RefinedSid.Value + Environment.NewLine;
+
+        text += "Use 1 : res_type : " + ResType1.Value + ",  count : " + Count1.Value + Environment.NewLine;
+        text += "Use 2 : res_type : " + ResType2.Value + ",  count : " + Count2.Value + Environment.NewLine;
+        text += "Give : res_type : " + ResType3.Value + ",  count : " + Count3.Value + Environment.NewLine;
+
+        text += "-----------------------------------------------------------------------------------------------" + Environment.NewLine;
+
+        return text;
+    }
+
+    public override string ToString_json()
+    {
+        String text = "{";
+        text += "\"orig\":\"" + OriginSid + "\",";
+        text += "\"refined\":\"" + RefinedSid + "\",";
+
+        text += "\"use\":[{";
+        text += "\"res_type\":" + ResType1 + ",";
+        text += "\"count\":" + Count1;
+        text += "},{";
+        text += "\"res_type\":" + ResType2 + ",";
+        text += "\"count\":" + Count2;
+        text += "}],";
+
+        text += "\"give\":{";
+        text += "\"res_type\":" + ResType3 + ",";
+        text += "\"count\":" + Count3;
+        text += "}";
+
+        text += "},";
+        return text;
+    }
+
+
+    public StringXor OriginSid { get => originalSid; set => originalSid = value; }
+    public StringXor RefinedSid { get => refinedSid; set => refinedSid = value; }
+
+    public UInt16Xor ResType1 { get => resType1; set => resType1 = value; }
+    public UInt16Xor Count1 { get => count1; set => count1 = value; }
+
+    public UInt16Xor ResType2 { get => resType2; set => resType2 = value; }
+    public UInt16Xor Count2 { get => count2; set => count2 = value; }
+
+    public UInt16Xor ResType3 { get => resType3; set => resType3 = value; }
+    public UInt16Xor Count3 { get => count3; set => count3 = value; }
+}
+
+public class SingleSkillAccessory : CommonRelated
+{
+
+    StringXor idTag;
+    StringXor nextIdTag;
+    StringXor prevIdTag;
+
+    UInt16Xor ssCoin;
+    UInt16Xor ssBadgeType;
+    UInt16Xor ssBadge;
+    UInt16Xor ssGreatBadge;
+
+
+
+
+
+
+
+
+    public SingleSkillAccessory()
+    {
+        Name = "Sacred Seal";
+        ElemXor = new byte[] { 0xD6, 0xD6, 0xA9, 0x46, 0x47, 0x3E, 0x6B, 0x16 };//데이터 개수 세는거
+        Size = 32;
+
+        SsCoin = new UInt16Xor(0x40, 0xC5);
+        SsBadgeType = new UInt16Xor(0x0F, 0xD5);
+        SsBadge = new UInt16Xor(0xEC, 0x8C);
+        SsGreatBadge = new UInt16Xor(0xFF, 0xCC);
+
+
+    }
+
+    public SingleSkillAccessory(long a, byte[] data) : this()
+    {
+        InsertIn(a, data);
+    }
+
+    public override void InsertIn(long a, byte[] data)
+    {
+        idTag = new StringXor(ExtractUtils.getLong(a, data) + offset, data, Common);
+        Archive.Index++;
+        nextIdTag = new StringXor(ExtractUtils.getLong(a + 8, data) + offset, data, Common);
+        Archive.Index++;
+        prevIdTag = new StringXor(ExtractUtils.getLong(a + 16, data) + offset, data, Common);
+        Archive.Index++;
+
+        SsCoin.XorValue(ExtractUtils.getShort(a + 24, data));
+        SsBadgeType.XorValue(ExtractUtils.getShort(a + 26, data));
+        SsBadge.XorValue(ExtractUtils.getShort(a + 28, data));
+        SsGreatBadge.XorValue(ExtractUtils.getShort(a + 30, data));
+
+    }
+
+    public override string ToString()
+    {
+        String text = "";
+
+
+        text += "Skill Id : " + idTag.Value + Environment.NewLine;
+        if (!nextIdTag.Value.Equals(""))
+            text += "Next Skill Id : " + nextIdTag.Value + Environment.NewLine;
+        if (!prevIdTag.Value.Equals(""))
+            text += "Prev Skill Id : " + prevIdTag.Value + Environment.NewLine;
+        text += "Required Coin : " + SsCoin.Value + Environment.NewLine;
+        text += "Required Badge Type : " + BadgeColor.getString(SsBadgeType.Value) + Environment.NewLine;
+        text += "Required Normal Badge : " + SsBadge.Value + Environment.NewLine;
+        text += "Required Great Badge : " + SsGreatBadge.Value + Environment.NewLine;
+
+
+
+        text += "-----------------------------------------------------------------------------------------------" + Environment.NewLine;
+
+        return text;
+    }
+
+    public override string ToString_json()
+    {
+        String text = "{";
+
+        text += "\"id_tag\":\"" + IdTag + "\",";
+        if (NextIdTag.Value.Equals(""))
+        {
+            text += "\"next_seal\":null,";
+        }
+        else
+        {
+            text += "\"next_seal\":\"" + NextIdTag + "\",";
+        }
+        if (PrevIdTag.Value.Equals(""))
+        {
+            text += "\"prev_seal\":null,";
+        }
+        else
+        {
+            text += "\"prev_seal\":\"" + PrevIdTag + "\",";
+        }
+
+        text += "\"ss_coin\":" + SsCoin + ",";
+        text += "\"ss_badge_type\":" + SsBadgeType + ",";
+        text += "\"ss_badge\":" + SsBadge + ",";
+        text += "\"ss_great_badge\":" + SsGreatBadge ;
+        text += "},";
+
+        return text;
+    }
+
+    public StringXor IdTag { get => idTag; set => idTag = value; }
+    public StringXor NextIdTag { get => nextIdTag; set => nextIdTag = value; }
+    public StringXor PrevIdTag { get => prevIdTag; set => prevIdTag = value; }
+
+    public UInt16Xor SsCoin { get => ssCoin; set => ssCoin = value; }
+    public UInt16Xor SsBadgeType { get => ssBadgeType; set => ssBadgeType = value; }
+    public UInt16Xor SsBadge { get => ssBadge; set => ssBadge = value; }
+    public UInt16Xor SsGreatBadge { get => ssGreatBadge; set => ssGreatBadge = value; }
+
+
+}
 public class GenericText : ExtractionBase
 {
     private StringXor[] elements;

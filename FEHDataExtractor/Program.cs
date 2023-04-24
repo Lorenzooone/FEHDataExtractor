@@ -26,7 +26,9 @@ namespace FEHDataExtractor
                 new BaseExtractArchiveDirect<Forging_Bonds>(),
                 new BaseExtractArchiveInteger<SingleSubscription>(),
                 new BaseExtractArchive<SingleArenaPerson>(),
-                new BaseExtractArchive<SingleCaptainSkill>()
+                new BaseExtractArchive<SingleCaptainSkill>(),
+                new BaseExtractArchive<SingleSkillAccessory>(),
+                new BaseExtractArchive<SingleWeaponRefine>()
                 ));
         }
 
