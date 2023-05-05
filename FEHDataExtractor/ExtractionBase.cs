@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Diagnostics;
 using static System.Net.Mime.MediaTypeNames;
+using System.Xml.Linq;
 
 
 //Make the program less crash-happy when things get updated
@@ -506,8 +507,10 @@ public class Legendary : CommonRelated
 public class Dragonflowers : CommonRelated
 {
     private Int32Xor dflowers;
+    private Int32Xor[] dflowerCostList;
 
     public Int32Xor Dflowers { get => dflowers; set => dflowers = value; }
+    public Int32Xor[] DFlowerCostList { get => dflowerCostList; set => dflowerCostList = value; }
 
     public Dragonflowers()
     {
@@ -525,13 +528,29 @@ public class Dragonflowers : CommonRelated
     {
         String text = "";
         text += "Max Dragonflowers: " + Dflowers.Value + Environment.NewLine;
+        text += "Required Dragonflowers : [";
+        foreach (Int32Xor cost in DFlowerCostList)
+        {
+            text += cost.Value + ", ";
+        }
+        text = text.Substring(0, text.Length - 2);
+        text += "]" + Environment.NewLine;
         return text;
     }
 
     public override string ToString_json()
     {
         String text = "";
-        text += "용꽃 한도: " + Dflowers.Value + Environment.NewLine;
+        text += "{\"max_count\":" + Dflowers.Value + ",";
+
+        text += "\"costs\": [";
+        foreach (Int32Xor cost in DFlowerCostList)
+        {
+            text += cost.Value + ",";
+        }
+        text = text.Substring(0, text.Length - 1);
+        text += "]}";
+
         return text;
     }
 
@@ -540,6 +559,13 @@ public class Dragonflowers : CommonRelated
         if (a != offset)
         {
             Dflowers.XorValue((ExtractUtils.getInt(a, data)));
+            a += 16;
+            DFlowerCostList = new Int32Xor[Dflowers.Value];
+            for (int i = 0; i < Dflowers.Value; i++)
+            {
+                DFlowerCostList[i] = new Int32Xor(0x7B, 0x6A, 0x5C, 0x71);
+                DFlowerCostList[i].XorValue(ExtractUtils.getInt(a + i * 4, data));
+            }
         }
     }
 }
@@ -931,9 +957,9 @@ public class SinglePerson : CharacterRelated
         {
             text += "\"legendary\": null,";
         }
-        text += "\"dragonflowers\": {";
-        text += "\"max_count\":" + Dflowers.Dflowers + "";
-        text += "},";
+        text += "\"dragonflowers\": ";
+        text += Dflowers.ToString_json();
+        text += ",";
 
         text += "\"timestamp\":" + (Timestamp.Value < 0 ? "null" : Timestamp.Value.ToString()) + ",";
         text += "\"id_num\":" + Id_num + ",";
@@ -966,7 +992,15 @@ public class SinglePerson : CharacterRelated
 
             for (int j = 0; j < PrintSkills.Length; j++)
             {
-                text += "\""+Skills[i, j]+"\"";
+                if(!Skills[i, j].Value.Equals(""))
+                {
+                    text += "\""+Skills[i, j]+"\"";
+                }
+                else
+                {
+                    text += "null";
+                }
+                
                 if(j != PrintSkills.Length -1)
                     text += ",";
             }
