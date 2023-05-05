@@ -50,14 +50,14 @@ namespace FEHDataExtractor
             {
                 a[i + 11] = new SingleWeaponClass(ExtractionBase.Colours.getString(i) + " Tome", 11 + i, ExtractionBase.Colours.getString(i), 2, true, false, false, false, false);
             }
-            a[15] = new SingleWeaponClass("Staff", 14, "Colorless", 2, true, true, false, false, false);
+            a[15] = new SingleWeaponClass("Staff", 15, "Colorless", 2, true, true, false, false, false);
             for (int i = 0; i < 4; i++)
             {
-                a[i + 16] = new SingleWeaponClass(ExtractionBase.Colours.getString(i) + " Breath", 15 + i, ExtractionBase.Colours.getString(i), 1, true, false, false, true, false);
+                a[i + 16] = new SingleWeaponClass(ExtractionBase.Colours.getString(i) + " Breath", 16 + i, ExtractionBase.Colours.getString(i), 1, true, false, false, true, false);
             }
             for (int i = 0; i < 4; i++)
             {
-                a[i + 20] = new SingleWeaponClass(ExtractionBase.Colours.getString(i) + " Beast", 19 + i, ExtractionBase.Colours.getString(i), 1, false, false, false, false, true);
+                a[i + 20] = new SingleWeaponClass(ExtractionBase.Colours.getString(i) + " Beast", 20 + i, ExtractionBase.Colours.getString(i), 1, false, false, false, false, true);
             }
             ExtractionBase.WeaponsData = a;
         }

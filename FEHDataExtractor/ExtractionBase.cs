@@ -794,6 +794,7 @@ public class SinglePerson : CharacterRelated
 
     Legendary legendary;
     Dragonflowers dflowers;
+    UInt32Xor version;
     UInt32Xor sort_value;
     UInt32Xor origin;
     ByteXor series;
@@ -901,6 +902,7 @@ public class SinglePerson : CharacterRelated
         text += "Timestamp: ";
         text += Timestamp.Value < 0 ? "Not available" + Environment.NewLine : DateTimeOffset.FromUnixTimeSeconds(Timestamp.Value).DateTime.ToLocalTime() + Environment.NewLine;
         text += "ID: " + Id_num + Environment.NewLine;
+        text += "Version: " + Version.Value + Environment.NewLine;
         text += "Sort Value: " + Sort_value + Environment.NewLine;
         text += "Origin: " + Origin.Value + Environment.NewLine;
         text += "Weapon: " + WeaponNames.getString(Weapon_type.Value) + Environment.NewLine;
@@ -1027,6 +1029,7 @@ public class SinglePerson : CharacterRelated
     public StringXor[,] Skills { get => skills; set => skills = value; }
     public UInt32Xor Origin { get => origin; set => origin = value; }
     public Dragonflowers Dflowers { get => dflowers; set => dflowers = value; }
+    public UInt32Xor Version { get => version; set => version = value; }
 }
 
 public class GCArea : GCRelated

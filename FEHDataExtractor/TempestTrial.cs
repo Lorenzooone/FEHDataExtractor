@@ -29,7 +29,7 @@ namespace FEHDataExtractor
         public TempestTrial()
         {
             Name = "Tempest Trials";
-            Size = 144;
+            Size = 152;
             ElemXor = new byte[]{ 0x37, 0x54, 0x19, 0xC5, 0xE6, 0xFE, 0x7C, 0x03 };
 
             Start = new Int64Xor(0x60, 0xf6, 0x37, 0xc5, 0x36, 0xa2, 0x0d, 0xdc);
@@ -89,10 +89,10 @@ namespace FEHDataExtractor
             TTRankRewards = new TT_rank_rewards();
             TTRankRewards.InsertIn(Archive, ExtractUtils.getLong(a + 120, data) + offset, data);
             Archive.Index++;
-            MapSize.XorValue(ExtractUtils.getInt(a + 136, data));
+            MapSize.XorValue(ExtractUtils.getInt(a + 144, data));
             Maps = new Maps((int)MapSize.Value);
             Archive.Index++;
-            Maps.InsertIn(Archive, ExtractUtils.getLong(a + 128, data) + offset, data);
+            Maps.InsertIn(Archive, ExtractUtils.getLong(a + 136, data) + offset, data);
         }
 
         public override string ToString()
